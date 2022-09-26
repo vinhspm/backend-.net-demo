@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MISA.Web08.AMIS.Common\MISA.Web08.AMIS.Common.csproj" />
+    <ProjectReference Include="..\MISA.Web08.AMIS.DL\MISA.Web08.AMIS.DL.csproj" />
+  </ItemGroup>
+
+</Project>
