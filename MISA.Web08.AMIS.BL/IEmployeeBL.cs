@@ -10,5 +10,7 @@ namespace MISA.Web08.AMIS.BL
     public interface IEmployeeBL
     {
         public IEnumerable<Employee>  GetAllEmployees();
+
+        public Employee GetEmployeeById();
     }
 }

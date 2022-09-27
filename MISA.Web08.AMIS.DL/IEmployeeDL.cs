@@ -9,7 +9,9 @@ namespace MISA.Web08.AMIS.DL
 {
     public interface IEmployeeDL
     {
-        public List<Employee> GetAllEmployees();
+        public IEnumerable<Employee> GetAllEmployees();
+
+        public Employee GetEmployeeById();
 
         public int InsertEmployee(Employee employee);
 

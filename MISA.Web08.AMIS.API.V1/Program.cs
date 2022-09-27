@@ -12,6 +12,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IEmployeeBL, EmployeeBL>();
 builder.Services.AddScoped<IEmployeeDL, EmployeeDL>();
 
+DataContext.MySqlConnectionString = builder.Configuration.GetConnectionString("MySqlConnectionString");
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

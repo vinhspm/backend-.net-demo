@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.Common.Enums
 {
-    public class Gender
+    public enum Gender
     {
-        public int Male = 0;
-        public int Female = 1;
-        public int Other = 2;
+        Male = 0,
+        Female = 1,
+        Other = 2,
     }
 }
