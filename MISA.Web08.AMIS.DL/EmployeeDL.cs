@@ -18,7 +18,7 @@ namespace MISA.Web08.AMIS.DL
             // khởi tạo kết nối tới db mysql
             string connectionString = DataContext.MySqlConnectionString;
             var mysqlConnection = new MySqlConnection(connectionString);
-            string storedProcedureName = String.Format(Resource.Proc_GetAll, "employee");
+            string storedProcedureName = String.Format(Resource.Proc_GetAll, typeof(Employee).Name);
 
             var employees = mysqlConnection.Query<Employee>(
                 storedProcedureName,
