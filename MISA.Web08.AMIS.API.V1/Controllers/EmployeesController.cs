@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MISA.Web08.AMIS.BL;
+using MISA.Web08.AMIS.Common.Entities;
 
 namespace MISA.Web08.AMIS.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class EmployeesController : ControllerBase
     {
         
@@ -17,11 +18,12 @@ namespace MISA.Web08.AMIS.API.Controllers
         public EmployeesController(IEmployeeBL employeeBL)
         {
             _employeeBL = employeeBL;
-        } 
+        }
         #endregion
 
+        #region Method
+
         [HttpGet]
-        [Route("")]
         public IActionResult GetAllEmployees()
         {
             try
@@ -34,19 +36,19 @@ namespace MISA.Web08.AMIS.API.Controllers
             {
                 Console.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
-                
+
             }
         }
 
-        [HttpGet("{employeeId}")]
-        [Route("")]
-        public IActionResult GetEmployeeById([FromRoute] Guid employeeId)
+        [HttpGet]
+        [Route("filter")]
+        public IActionResult GetEmployeesFilter([FromQuery] int pageSize, [FromQuery] int pageNumber, [FromQuery] string employeeFilter)
         {
             try
             {
-                var employees = _employeeBL.GetEmployeeById();
+                PagingData pagingData = _employeeBL.GetEmployeesFilter(pageSize, pageNumber, employeeFilter);
 
-                return StatusCode(StatusCodes.Status200OK, employees);
+                return StatusCode(StatusCodes.Status200OK, pagingData);
             }
             catch (Exception ex)
             {
@@ -55,5 +57,95 @@ namespace MISA.Web08.AMIS.API.Controllers
 
             }
         }
+
+        [HttpGet("{employeeId}")]
+        public IActionResult GetEmployeeById([FromRoute] Guid employeeId)
+        {
+            try
+            {
+                var employee = _employeeBL.GetEmployeeById(employeeId);
+
+                return StatusCode(StatusCodes.Status200OK, employee);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+        }
+
+        [HttpPost()]
+        public IActionResult InsertEmployee([FromBody] Employee employee)
+        {
+
+            try
+            {
+                var result = _employeeBL.InsertEmployee(employee);
+
+                return StatusCode(StatusCodes.Status201Created, result);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+        }
+
+        [HttpPut("{employeeId}")]
+        public IActionResult UpdateEmployee([FromRoute] Guid employeeId, [FromBody] Employee employee)
+        {
+
+            try
+            {
+                var result = _employeeBL.UpdateEmployee(employeeId, employee);
+
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+        }
+
+        [HttpDelete("{employeeId}")]
+        public IActionResult DeleteEmployeeById([FromRoute] Guid employeeId)
+        {
+            try
+            {
+                var employee = _employeeBL.DeleteEmployeeById(employeeId);
+
+                return StatusCode(StatusCodes.Status200OK, employee);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+        }
+
+        [HttpGet]
+        [Route("NewEmployeeCode")]
+        public IActionResult GetNewEmployeeCode()
+        {
+            try
+            {
+                string newEmployeeCode = _employeeBL.GetNewEmployeeCode();
+
+                return StatusCode(StatusCodes.Status200OK, newEmployeeCode);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+
+            }
+        } 
+
+        #endregion
     }
 }

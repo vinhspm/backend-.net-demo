@@ -88,11 +88,92 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to NV.
+        /// </summary>
+        public static string New_EmployeeCode_Prefix {
+            get {
+                return ResourceManager.GetString("New_EmployeeCode_Prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to proc_{0}_Delete.
+        /// </summary>
+        public static string Proc_Delete {
+            get {
+                return ResourceManager.GetString("Proc_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to proc_{0}_Detail.
+        /// </summary>
+        public static string Proc_Detail {
+            get {
+                return ResourceManager.GetString("Proc_Detail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @v_EmployeeId.
+        /// </summary>
+        public static string proc_emp_id {
+            get {
+                return ResourceManager.GetString("proc_emp_id", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to proc_employee_Filter.
+        /// </summary>
+        public static string Proc_employee_Filter {
+            get {
+                return ResourceManager.GetString("Proc_employee_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_employee_Insert.
+        /// </summary>
+        public static string Proc_employee_Insert {
+            get {
+                return ResourceManager.GetString("Proc_employee_Insert", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to proc_employee_max.
+        /// </summary>
+        public static string Proc_employee_Max {
+            get {
+                return ResourceManager.GetString("Proc_employee_Max", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proc_employee_Update.
+        /// </summary>
+        public static string Proc_employee_Update {
+            get {
+                return ResourceManager.GetString("Proc_employee_Update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to proc_{0}_GetAll.
         /// </summary>
         public static string Proc_GetAll {
             get {
                 return ResourceManager.GetString("Proc_GetAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to proc_{0}_GetAllCount.
+        /// </summary>
+        public static string Proc_GetAllCount {
+            get {
+                return ResourceManager.GetString("Proc_GetAllCount", resourceCulture);
             }
         }
         

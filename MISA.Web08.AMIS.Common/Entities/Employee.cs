@@ -15,17 +15,17 @@ namespace MISA.Web08.AMIS.Common.Entities
         [Required(ErrorMessage = "e005")]
         public string FullName { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
 
         public string CreatedBy { get; set; }
 
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
 
         public string ModifiedBy { get; set; }
+
+        public Gender? Gender { get; set; }
         
-        public Gender Gender { get; set; }
-        
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         public string PhoneNumber { get; set; }
 
@@ -35,13 +35,13 @@ namespace MISA.Web08.AMIS.Common.Entities
 
         public string IdentityNumber { get; set; }
 
-        public DateTime IdentityDate { get; set; }
+        public DateTime? IdentityDate { get; set; }
 
         public string IdentityPlace { get; set; }
 
         public Guid DepartmentId { get; set; }
 
-        public Guid PositionId { get; set; }
+        public Guid? PositionId { get; set; }
 
         public string BankAccount { get; set; }
         
@@ -50,13 +50,6 @@ namespace MISA.Web08.AMIS.Common.Entities
         public string BankName { get; set; }
         
         public string HomePhoneNumber { get; set; }
-
-
-
-
-
-
-
 
     }
 }

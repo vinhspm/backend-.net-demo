@@ -129,9 +129,45 @@
     <value>One or more validation errors occurred</value>
     <comment>Message cho dev đọc khi validate dữ liệu đầu vào thất bại</comment>
   </data>
+  <data name="New_EmployeeCode_Prefix" xml:space="preserve">
+    <value>NV</value>
+    <comment>prefix của mã nhân viên</comment>
+  </data>
+  <data name="Proc_Delete" xml:space="preserve">
+    <value>proc_{0}_Delete</value>
+    <comment>template string cho procedure xoá 1 bản ghi trong 1 bảng</comment>
+  </data>
+  <data name="Proc_Detail" xml:space="preserve">
+    <value>proc_{0}_Detail</value>
+    <comment>template string cho procedure lấy chi tiết 1 bản ghi trong 1 bảng</comment>
+  </data>
+  <data name="Proc_employee_Filter" xml:space="preserve">
+    <value>proc_employee_Filter</value>
+    <comment>template string cho procedure lấy nhân viên trong bảng theo phân trang</comment>
+  </data>
+  <data name="Proc_employee_Insert" xml:space="preserve">
+    <value>Proc_employee_Insert</value>
+    <comment>template string cho procedure insert 1 bản ghi vào bảng nhân viên</comment>
+  </data>
+  <data name="Proc_employee_Max" xml:space="preserve">
+    <value>proc_employee_max</value>
+    <comment>template string cho procedure lấy mã nhân viên lớn nhất trong bảng nhân viên</comment>
+  </data>
+  <data name="Proc_employee_Update" xml:space="preserve">
+    <value>Proc_employee_Update</value>
+    <comment>template string cho procedure insert 1 bản ghi vào bảng nhân viên</comment>
+  </data>
+  <data name="proc_emp_id" xml:space="preserve">
+    <value>@v_EmployeeId</value>
+    <comment>template string cho parameter truyền vào procedure là employee id</comment>
+  </data>
   <data name="Proc_GetAll" xml:space="preserve">
     <value>proc_{0}_GetAll</value>
     <comment>Template string cho procedure lấy tất cả bản ghi của một bảng</comment>
+  </data>
+  <data name="Proc_GetAllCount" xml:space="preserve">
+    <value>proc_{0}_GetAllCount</value>
+    <comment>Template string cho procedure đếm tất cả bản ghi trong một bảng</comment>
   </data>
   <data name="UserMsg_Exception" xml:space="preserve">
     <value>Có lỗi xảy ra! Vui lòng liên hệ với MISA</value>

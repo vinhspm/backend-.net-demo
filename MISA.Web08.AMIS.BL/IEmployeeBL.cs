@@ -11,6 +11,17 @@ namespace MISA.Web08.AMIS.BL
     {
         public IEnumerable<Employee>  GetAllEmployees();
 
-        public Employee GetEmployeeById();
+        public PagingData GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter);
+
+        public string GetNewEmployeeCode();
+        
+        public Employee GetEmployeeById(Guid employeeId); 
+
+        public int InsertEmployee(Employee employee); 
+
+        public int UpdateEmployee(Guid employeeId, Employee employee);
+
+        public int DeleteEmployeeById(Guid employeeId);
+
     }
 }
