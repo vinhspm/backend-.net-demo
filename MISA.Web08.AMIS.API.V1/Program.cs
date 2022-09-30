@@ -9,6 +9,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//dependency injection
+builder.Services.AddScoped(typeof(IBaseBL<>), typeof(BaseBL<>));
+builder.Services.AddScoped(typeof(IBaseDL<>), typeof(BaseDL<>));
 builder.Services.AddScoped<IEmployeeBL, EmployeeBL>();
 builder.Services.AddScoped<IEmployeeDL, EmployeeDL>();
 

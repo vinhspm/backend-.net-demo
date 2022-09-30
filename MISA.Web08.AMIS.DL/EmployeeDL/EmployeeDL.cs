@@ -11,24 +11,13 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.DL
 {
-    public class EmployeeDL : IEmployeeDL
+    public class EmployeeDL : BaseDL<Employee>, IEmployeeDL
     {
         private MySqlConnection _connection;
 
         public EmployeeDL()
         {
             _connection = new MySqlConnection(DataContext.MySqlConnectionString);
-        }
-
-        public IEnumerable<Employee> GetAllEmployees()
-        {
-            
-            string storedProcedureName = String.Format(Resource.Proc_GetAll, typeof(Employee).Name);
-
-            var employees = _connection.Query<Employee>(
-                storedProcedureName,
-                commandType: System.Data.CommandType.StoredProcedure);
-            return employees;
         }
 
         public Dictionary<string, object> GetEmployeesFilter(int v_Offset, int v_Limit, string v_Where)
@@ -76,43 +65,12 @@ namespace MISA.Web08.AMIS.DL
             var storedProcedureName = String.Format(Resource.Proc_Detail, typeof(Employee).Name); ;
 
             DynamicParameters value = new DynamicParameters();
-            value.Add(Resource.proc_emp_id, employeeId);
+            value.Add("@v_id", employeeId);
 
             var employee = _connection.QueryFirstOrDefault<Employee>(storedProcedureName, value, commandType: System.Data.CommandType.StoredProcedure);
 
             return employee;
         }
 
-        public int DeleteEmployeeById(Guid employeeId)
-        {
-            var storedProcedureName = String.Format(Resource.Proc_Delete, typeof(Employee).Name); ;
-
-            DynamicParameters value = new DynamicParameters();
-            value.Add(Resource.proc_emp_id, employeeId);
-
-            var res =  _connection.Execute(storedProcedureName, value, commandType: System.Data.CommandType.StoredProcedure);
-            return res;
-        }
-
-        public int InsertEmployee(string v_Columns, string v_Values)
-        {
-                var storedProcedureName = Resource.Proc_employee_Insert;
-
-                DynamicParameters values = new DynamicParameters();
-                values.Add("@v_Columns", v_Columns);
-                values.Add("@v_Values", v_Values);
-                return _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure);
-            
-        }
-
-        public int UpdateEmployee(Guid employeeId, string v_Query)
-        {
-            var v_EmployeeID = $"'{employeeId}'";
-            var storedProcedureName = Resource.Proc_employee_Update;
-            DynamicParameters values = new DynamicParameters();
-            values.Add("@v_EmployeeID", v_EmployeeID);
-            values.Add("@v_Query", v_Query);
-            return _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure);
-        }
     }
 }

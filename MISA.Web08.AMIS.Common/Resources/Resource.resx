@@ -117,12 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DefaultUser" xml:space="preserve">
+    <value>Admin</value>
+    <comment>tên người dùng mặc định</comment>
+  </data>
+  <data name="DevMsg_CannotFind" xml:space="preserve">
+    <value>Could not find record with given id</value>
+    <comment>Message cho dev đọc khi không tìm thấy bản ghi</comment>
+  </data>
+  <data name="DevMsg_DeleteFailed" xml:space="preserve">
+    <value>Delete to database return 0</value>
+    <comment>Message cho dev đọc khi delete bản ghi vào db thất bại</comment>
+  </data>
   <data name="DevMsg_Exception" xml:space="preserve">
     <value>Catched an exception</value>
     <comment>Message cho dev đọc khi gọi api gặp exception</comment>
   </data>
   <data name="DevMsg_InsertFailed" xml:space="preserve">
     <value>Insert to database return 0</value>
+    <comment>Message cho dev đọc khi insert bản ghi vào db thất bại</comment>
+  </data>
+  <data name="DevMsg_UpdateFailed" xml:space="preserve">
+    <value>Update to database return 0</value>
     <comment>Message cho dev đọc khi insert bản ghi vào db thất bại</comment>
   </data>
   <data name="DevMsg_ValidateFailed" xml:space="preserve">
@@ -145,21 +161,9 @@
     <value>proc_employee_Filter</value>
     <comment>template string cho procedure lấy nhân viên trong bảng theo phân trang</comment>
   </data>
-  <data name="Proc_employee_Insert" xml:space="preserve">
-    <value>Proc_employee_Insert</value>
-    <comment>template string cho procedure insert 1 bản ghi vào bảng nhân viên</comment>
-  </data>
   <data name="Proc_employee_Max" xml:space="preserve">
     <value>proc_employee_max</value>
     <comment>template string cho procedure lấy mã nhân viên lớn nhất trong bảng nhân viên</comment>
-  </data>
-  <data name="Proc_employee_Update" xml:space="preserve">
-    <value>Proc_employee_Update</value>
-    <comment>template string cho procedure insert 1 bản ghi vào bảng nhân viên</comment>
-  </data>
-  <data name="proc_emp_id" xml:space="preserve">
-    <value>@v_EmployeeId</value>
-    <comment>template string cho parameter truyền vào procedure là employee id</comment>
   </data>
   <data name="Proc_GetAll" xml:space="preserve">
     <value>proc_{0}_GetAll</value>
@@ -169,13 +173,33 @@
     <value>proc_{0}_GetAllCount</value>
     <comment>Template string cho procedure đếm tất cả bản ghi trong một bảng</comment>
   </data>
+  <data name="Proc_Insert" xml:space="preserve">
+    <value>proc_{0}_Insert</value>
+    <comment>template string cho procedure insert 1 bản ghi vào bảng</comment>
+  </data>
+  <data name="Proc_Update" xml:space="preserve">
+    <value>Proc_{0}_Update</value>
+    <comment>template string cho procedure insert 1 bản ghi vào bảng nhân viên</comment>
+  </data>
+  <data name="UserMsg_CannotFind" xml:space="preserve">
+    <value>Không tìm thấy bản ghi</value>
+    <comment>Message cho user đọc khi không tìm thấy bản ghi</comment>
+  </data>
+  <data name="UserMsg_DeleteFailed" xml:space="preserve">
+    <value>Xoá thất bại</value>
+    <comment>Message cho user đọc khi xoá bản ghi vào db thất bại</comment>
+  </data>
   <data name="UserMsg_Exception" xml:space="preserve">
     <value>Có lỗi xảy ra! Vui lòng liên hệ với MISA</value>
     <comment>Message cho user đọc khi gọi api gặp exception</comment>
   </data>
   <data name="UserMsg_InsertFailed" xml:space="preserve">
-    <value>Thêm mới nhân viên thất bại</value>
+    <value>Thêm mới thất bại</value>
     <comment>Message cho user đọc khi insert bản ghi vào db thất bại</comment>
+  </data>
+  <data name="UserMsg_UpdateFailed" xml:space="preserve">
+    <value>Chỉnh sửa thất bại</value>
+    <comment>Message cho user đọc khi update bản ghi vào db thất bại</comment>
   </data>
   <data name="UserMsg_ValidateFailed" xml:space="preserve">
     <value>Dữ liệu đầu vào không hợp lệ</value>

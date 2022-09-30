@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.DL
 {
-    public interface IEmployeeDL
+    public interface IEmployeeDL : IBaseDL<Employee>
     {
-        public IEnumerable<Employee> GetAllEmployees();
 
         public Dictionary<string,object> GetEmployeesFilter(int v_Offset, int v_Limit, string v_Where);
 
@@ -17,12 +16,5 @@ namespace MISA.Web08.AMIS.DL
 
         public int GetCountEmployees();
 
-        public Employee GetEmployeeById(Guid EmployeeId); 
-
-        public int InsertEmployee(string v_Columns, string v_Values);
-
-        public int UpdateEmployee(Guid v_EmployeeID, string v_Query);
-
-        public int DeleteEmployeeById(Guid v_EmployeeID);
     }
 }

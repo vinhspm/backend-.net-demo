@@ -4,52 +4,64 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MISA.Web08.AMIS.Common.Entities
 {
-    public class Employee
+    public class Employee : BaseEntity
     {
-        [Key]
-        public Guid EmployeeID { get; set; }
+        // id nhân viên
+        [PrimaryKey]
+        public Guid? EmployeeID { get; set; }
 
-        [Required(ErrorMessage = "e004")]
-        public string EmployeeCode { get; set; }
+        //mã nhân viên
+        [NotEmpty, NotDuplicate]
+        public string? EmployeeCode { get; set; }
 
-        [Required(ErrorMessage = "e005")]
-        public string FullName { get; set; }
+        // tên nhân viên
+        [NotEmpty]
+        public string? FullName { get; set; }
 
-        public DateTime? CreatedDate { get; set; }
-
-        public string CreatedBy { get; set; }
-
-        public DateTime? ModifiedDate { get; set; }
-
-        public string ModifiedBy { get; set; }
-
+        // giới tính
         public Gender? Gender { get; set; }
         
+        // ngày sinh
         public DateTime? DateOfBirth { get; set; }
 
-        public string PhoneNumber { get; set; }
+        // số điện thoại
+        public string? PhoneNumber { get; set; }
 
-        public string Email { get; set; }
+        // email
+        [EmailAddress]
+        public string? Email { get; set; }
 
-        public string Address { get; set; }
+        // địa chỉ
+        public string? Address { get; set; }
 
-        public string IdentityNumber { get; set; }
+        // số cmnd
+        public string? IdentityNumber { get; set; }
 
+        // ngày cấp cmnd
         public DateTime? IdentityDate { get; set; }
 
-        public string IdentityPlace { get; set; }
+        // nơi cấp cmnd
+        public string? IdentityPlace { get; set; }
 
+        //id phòng ban
+        [MustExisted]
         public Guid DepartmentId { get; set; }
 
+        // id vị trí
+        [MustExisted]
         public Guid? PositionId { get; set; }
 
-        public string BankAccount { get; set; }
+        // số tài khoản ngân hàng
+        public string? BankAccount { get; set; }
         
-        public string BankBranch { get; set; }
+        // chi nhánh ngân hàng
+        public string? BankBranch { get; set; }
         
-        public string BankName { get; set; }
+        // tên ngân hàng
+        public string? BankName { get; set; }
         
-        public string HomePhoneNumber { get; set; }
+        // số điện thoại cố định
+        public string? HomePhoneNumber { get; set; }
 
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MISA.Web08.AMIS.BL;
+using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
 
 namespace MISA.Web08.AMIS.API.Controllers
 {
-    [Route("api/v1/[controller]")]
-    public class EmployeesController : ControllerBase
+    public class EmployeesController : BasesController<Employee>
     {
         
         #region Field
@@ -15,34 +15,27 @@ namespace MISA.Web08.AMIS.API.Controllers
         #endregion
 
         #region Constructor
-        public EmployeesController(IEmployeeBL employeeBL)
+
+        public EmployeesController(IEmployeeBL employeeBL) : base(employeeBL)
         {
             _employeeBL = employeeBL;
         }
+
         #endregion
 
         #region Method
 
-        [HttpGet]
-        public IActionResult GetAllEmployees()
-        {
-            try
-            {
-                var employees = _employeeBL.GetAllEmployees();
-
-                return StatusCode(StatusCodes.Status200OK, employees);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-
-            }
-        }
-
+        /// <summary>
+        /// lấy thông tin nhân viên theo phân trang
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="employeeFilter"></param>
+        /// created: vinhkt(30/09/2022)
+        /// <returns></returns>
         [HttpGet]
         [Route("filter")]
-        public IActionResult GetEmployeesFilter([FromQuery] int pageSize, [FromQuery] int pageNumber, [FromQuery] string employeeFilter)
+        public IActionResult GetEmployeesFilter([FromQuery] int pageSize, [FromQuery] int pageNumber, [FromQuery] string? employeeFilter)
         {
             try
             {
@@ -58,76 +51,11 @@ namespace MISA.Web08.AMIS.API.Controllers
             }
         }
 
-        [HttpGet("{employeeId}")]
-        public IActionResult GetEmployeeById([FromRoute] Guid employeeId)
-        {
-            try
-            {
-                var employee = _employeeBL.GetEmployeeById(employeeId);
-
-                return StatusCode(StatusCodes.Status200OK, employee);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-
-            }
-        }
-
-        [HttpPost()]
-        public IActionResult InsertEmployee([FromBody] Employee employee)
-        {
-
-            try
-            {
-                var result = _employeeBL.InsertEmployee(employee);
-
-                return StatusCode(StatusCodes.Status201Created, result);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-
-            }
-        }
-
-        [HttpPut("{employeeId}")]
-        public IActionResult UpdateEmployee([FromRoute] Guid employeeId, [FromBody] Employee employee)
-        {
-
-            try
-            {
-                var result = _employeeBL.UpdateEmployee(employeeId, employee);
-
-                return StatusCode(StatusCodes.Status200OK, result);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-
-            }
-        }
-
-        [HttpDelete("{employeeId}")]
-        public IActionResult DeleteEmployeeById([FromRoute] Guid employeeId)
-        {
-            try
-            {
-                var employee = _employeeBL.DeleteEmployeeById(employeeId);
-
-                return StatusCode(StatusCodes.Status200OK, employee);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError);
-
-            }
-        }
-
+        /// <summary>
+        /// lấy mã nhân viên mới
+        /// </summary>
+        /// created: vinhkt(30/09/2022)
+        /// <returns></returns>
         [HttpGet]
         [Route("NewEmployeeCode")]
         public IActionResult GetNewEmployeeCode()
