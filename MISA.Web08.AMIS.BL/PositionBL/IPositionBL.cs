@@ -1,5 +1,4 @@
 ﻿using MISA.Web08.AMIS.Common;
-using MISA.Web08.AMIS.DL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.BL
 {
-    public class DepartmentBL : BaseBL<Department>, IDepartmentBL
+    public interface IPositionBL : IBaseBL<Position>
     {
-        public DepartmentBL(IBaseDL<Department> baseDL) : base(baseDL)
-        {
-        }
     }
 }

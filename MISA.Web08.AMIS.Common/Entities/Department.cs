@@ -9,13 +9,16 @@ namespace MISA.Web08.AMIS.Common
     public class Department : BaseEntity
     {
         // id phòng ban
-        public Guid DepartmentID { get; set; } = Guid.NewGuid();
+        [PrimaryKey]
+        public Guid? DepartmentId { get; set; }
 
         // mã phòng ban
-        public string DepartmentCode { get; set; }
+        [NotEmpty, NotDuplicate]
+        public string? DepartmentCode { get; set; }
 
         // tên phòng ban
-        public string DepartmentName { get; set; }
+        [NotEmpty]
+        public string? DepartmentName { get; set; }
 
 
     }

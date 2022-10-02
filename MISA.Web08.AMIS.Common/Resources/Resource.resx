@@ -157,6 +157,10 @@
     <value>proc_{0}_Detail</value>
     <comment>template string cho procedure lấy chi tiết 1 bản ghi trong 1 bảng</comment>
   </data>
+  <data name="Proc_Duplicate" xml:space="preserve">
+    <value>proc_{0}_Duplicate</value>
+    <comment>template string cho procedure lấy số bản ghi có giá trị của field trùng với value </comment>
+  </data>
   <data name="Proc_employee_Filter" xml:space="preserve">
     <value>proc_employee_Filter</value>
     <comment>template string cho procedure lấy nhân viên trong bảng theo phân trang</comment>

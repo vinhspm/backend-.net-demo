@@ -37,11 +37,11 @@ namespace MISA.Web08.AMIS.Common
     }
 
     /// <summary>
-    /// đánh dấu property là phải tồn tại trong db
+    /// đánh dấu property là định dạng email
     /// author: vinhkt (30/09/2022)
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class MustExisted : Attribute
+    public class Email : Attribute
     {
 
     }

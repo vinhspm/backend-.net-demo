@@ -8,10 +8,14 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.BL
 {
-    public class DepartmentBL : BaseBL<Department>, IDepartmentBL
+    public class PositionBL : BaseBL<Position>, IPositionBL
     {
-        public DepartmentBL(IBaseDL<Department> baseDL) : base(baseDL)
+        #region Constructor
+        
+        public PositionBL(IBaseDL<Position> baseDL) : base(baseDL)
         {
-        }
+        } 
+
+        #endregion
     }
 }

@@ -50,5 +50,13 @@ namespace MISA.Web08.AMIS.DL
         /// <returns>record</returns>
         /// created by: vinhkt(30/09/2022)
         public T GetRecordById(Guid id);
+
+        /// <summary>
+        /// tìm giá trị của field trong db bị trùng lặp hay không
+        /// </summary>
+        /// <param name="fieldName" name="fieldValue"></param>
+        /// <returns>boolean</returns>
+        /// created by: vinhkt(30/09/2022)
+        public T FindDuplicate(string fieldName, string fieldValue);
     }
 }

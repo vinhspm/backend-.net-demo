@@ -28,8 +28,5 @@ namespace MISA.Web08.AMIS.Common
             CurrentPageRecords = currentPageRecords;
         }
 
-        public PagingData()
-        {
-        }
     }
 }

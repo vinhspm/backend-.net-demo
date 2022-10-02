@@ -15,36 +15,7 @@ namespace MISA.Web08.AMIS.DL
     public class BaseDL<T> : IBaseDL<T>
     {
 
-        /// <summary>
-        /// xoá 1 bản ghi
-        /// </summary>
-        /// <param name="v_id"></param>
-        /// <returns></returns>
-        /// created by: vinhkt(30/09/2022)
-        public QueryResult DeleteRecord(Guid v_id)
-        {
-            DynamicParameters value = new DynamicParameters();
-            value.Add("@v_Id", v_id);
-            int affetecRows = 0;
-            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
-            {
-                var storedProcedureName = String.Format(Resource.Proc_Delete, typeof(T).Name); ;
-
-                affetecRows = _connection.Execute(
-                                storedProcedureName,
-                                value,
-                                commandType: System.Data.CommandType.StoredProcedure);
-            }
-
-            if (affetecRows > 0)
-            {
-                return QueryResult.Success;
-            }
-            else
-            {
-                return QueryResult.Fail;
-            }
-        }
+        
 
         #region Method
 
@@ -73,11 +44,12 @@ namespace MISA.Web08.AMIS.DL
         /// created by: vinhkt(30/09/2022)
         public T GetRecordById(Guid id)
         {
-            DynamicParameters value = new DynamicParameters();
-            value.Add("@v_id", id);
+            
             var storedProcedureName = String.Format(Resource.Proc_Detail, typeof(T).Name); ;
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
+                DynamicParameters value = new DynamicParameters();
+                value.Add("@v_id", id);
                 var records = _connection.QueryFirstOrDefault<T>(
                                 storedProcedureName,
                                 value,
@@ -130,15 +102,15 @@ namespace MISA.Web08.AMIS.DL
         /// created by: vinhkt(30/09/2022)
         public QueryResult UpdateRecord(Guid id, string v_Query)
         {
-            var v_Id = $"'{id}'";
-            DynamicParameters values = new DynamicParameters();
-            values.Add("@v_Id", v_Id);
-            values.Add("@v_Query", v_Query);
+            
             var affetecRows = 0;
 
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
-
+                var v_Id = $"'{id}'";
+                DynamicParameters values = new DynamicParameters();
+                values.Add("@v_Id", v_Id);
+                values.Add("@v_Query", v_Query);
                 var storedProcedureName = String.Format(Resource.Proc_Update, typeof(T).Name);
 
                 affetecRows = _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure);
@@ -154,6 +126,61 @@ namespace MISA.Web08.AMIS.DL
             }
         }
 
+        /// <summary>
+        /// xoá 1 bản ghi
+        /// </summary>
+        /// <param name="v_id"></param>
+        /// <returns></returns>
+        /// created by: vinhkt(30/09/2022)
+        public QueryResult DeleteRecord(Guid v_id)
+        {
+            
+            int affetecRows = 0;
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                var storedProcedureName = String.Format(Resource.Proc_Delete, typeof(T).Name); ;
+                DynamicParameters value = new DynamicParameters();
+                value.Add("@v_Id", v_id);
+                affetecRows = _connection.Execute(
+                                storedProcedureName,
+                                value,
+                                commandType: System.Data.CommandType.StoredProcedure);
+            }
+
+            if (affetecRows > 0)
+            {
+                return QueryResult.Success;
+            }
+            else
+            {
+                return QueryResult.Fail;
+            }
+        }
+
+        /// <summary>
+        /// tìm bản ghi trùng dữ liệu
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <param name="fieldValue"></param>
+        /// <returns></returns>
+        public T FindDuplicate(string fieldName, string fieldValue)
+        {
+            T duplicateRecord;
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                var storedProcedureName = String.Format(Resource.Proc_Duplicate, typeof(T).Name);
+                DynamicParameters values = new DynamicParameters();
+                values.Add("@v_FieldName", fieldName);
+                values.Add("@v_FieldValue", $"'{fieldValue}'");
+
+                duplicateRecord = _connection.QueryFirstOrDefault<T>(
+                                storedProcedureName,
+                                values,
+                                commandType: System.Data.CommandType.StoredProcedure);
+                return duplicateRecord;
+            }
+
+        }
         #endregion
     }
 }

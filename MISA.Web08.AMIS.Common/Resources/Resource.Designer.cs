@@ -151,6 +151,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to proc_{0}_Duplicate.
+        /// </summary>
+        public static string Proc_Duplicate {
+            get {
+                return ResourceManager.GetString("Proc_Duplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to proc_employee_Filter.
         /// </summary>
         public static string Proc_employee_Filter {

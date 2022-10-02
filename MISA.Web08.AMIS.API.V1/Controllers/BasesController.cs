@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MISA.Web08.AMIS.BL;
 using MISA.Web08.AMIS.Common;
@@ -47,10 +48,10 @@ namespace MISA.Web08.AMIS.API.Controllers
                 Console.WriteLine(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
                 AMISErrorCode.Exception,
-                "dev message",
-                "user message",
-                "more info",
-                "traceid"));
+                Resource.DevMsg_Exception,
+                Resource.UserMsg_Exception,
+                Resource.UserMsg_Exception,
+                HttpContext.TraceIdentifier));
             }
         }
 
@@ -73,11 +74,12 @@ namespace MISA.Web08.AMIS.API.Controllers
                 }
                 else
                 {
+                    var ErrorData = (ErrorResult) result.Data;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResult(
-                       AMISErrorCode.InvalidInput,
+                       ErrorData.Code,
                        Resource.DevMsg_ValidateFailed,
                        Resource.UserMsg_ValidateFailed,
-                       result.Data,
+                       ErrorData.MoreInfo,
                        HttpContext.TraceIdentifier));
                 }
             }
@@ -113,11 +115,12 @@ namespace MISA.Web08.AMIS.API.Controllers
                 }
                 else
                 {
+                    var ErrorData = (ErrorResult)result.Data;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResult(
-                       AMISErrorCode.InvalidInput,
+                       ErrorData.Code,
                        Resource.DevMsg_ValidateFailed,
                        Resource.UserMsg_ValidateFailed,
-                       result.Data,
+                       ErrorData.MoreInfo,
                        HttpContext.TraceIdentifier));
                 }
             }

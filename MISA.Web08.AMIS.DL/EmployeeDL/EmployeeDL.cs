@@ -60,17 +60,6 @@ namespace MISA.Web08.AMIS.DL
             return maxEmployeeCode;
         }
 
-        public Employee GetEmployeeById(Guid employeeId)
-        {
-            var storedProcedureName = String.Format(Resource.Proc_Detail, typeof(Employee).Name); ;
-
-            DynamicParameters value = new DynamicParameters();
-            value.Add("@v_id", employeeId);
-
-            var employee = _connection.QueryFirstOrDefault<Employee>(storedProcedureName, value, commandType: System.Data.CommandType.StoredProcedure);
-
-            return employee;
-        }
 
     }
 }

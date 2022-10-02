@@ -8,7 +8,7 @@ namespace MISA.Web08.AMIS.Common.Entities
     {
         // id nhân viên
         [PrimaryKey]
-        public Guid? EmployeeID { get; set; }
+        public Guid? EmployeeId { get; set; }
 
         //mã nhân viên
         [NotEmpty, NotDuplicate]
@@ -28,7 +28,7 @@ namespace MISA.Web08.AMIS.Common.Entities
         public string? PhoneNumber { get; set; }
 
         // email
-        [EmailAddress]
+        [Email]
         public string? Email { get; set; }
 
         // địa chỉ
@@ -44,11 +44,10 @@ namespace MISA.Web08.AMIS.Common.Entities
         public string? IdentityPlace { get; set; }
 
         //id phòng ban
-        [MustExisted]
-        public Guid DepartmentId { get; set; }
+        [NotEmpty]
+        public Guid? DepartmentId { get; set; }
 
         // id vị trí
-        [MustExisted]
         public Guid? PositionId { get; set; }
 
         // số tài khoản ngân hàng

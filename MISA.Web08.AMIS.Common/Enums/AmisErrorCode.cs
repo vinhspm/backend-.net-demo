@@ -10,5 +10,8 @@ namespace MISA.Web08.AMIS.Common
     {
         Exception = 001,
         InvalidInput = 002,
+        NotNullInput = 003,
+        DuplicateInput = 004,
+        MustExistInput = 005
     }
 }

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MISA.Web08.AMIS.BL
+namespace MISA.Web08.AMIS.DL
 {
-    public interface IDepartmentBL: IBaseBL<Department>
+    public class PositionDL: BaseDL<Position>, IPositionDL
     {
     }
 }
