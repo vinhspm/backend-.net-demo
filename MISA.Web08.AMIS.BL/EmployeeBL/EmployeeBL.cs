@@ -77,6 +77,14 @@ namespace MISA.Web08.AMIS.BL
 
             return newEmployeeCode;
         }
+
+        public ServiceResponse MultipleDelete(List<Guid> guids)
+        {
+            int affectedRecords = _employeeDL.MultipleDelete(guids);
+            
+            return new ServiceResponse(true, new MultipleDeleteResult(affectedRecords, guids.Count - affectedRecords));
+            
+        }
     } 
 
     #endregion

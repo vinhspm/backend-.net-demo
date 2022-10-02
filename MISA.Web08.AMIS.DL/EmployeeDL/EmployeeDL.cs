@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
 using MISA.Web08.AMIS.Common.Resources;
 using MySqlConnector;
@@ -60,6 +61,40 @@ namespace MISA.Web08.AMIS.DL
             return maxEmployeeCode;
         }
 
+        /// <summary>
+        /// xoá nhiều nhân viên
+        /// </summary>
+        /// <param name="guids"></param>
+        /// <returns></returns>
+        public int MultipleDelete(List<Guid> guids)
+        {
+            int affetecRows = 0;
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                string idsQuery = "(";
+                for(int i = 0; i < guids.Count; i++)
+                {
+                    if(i == guids.Count - 1)
+                    {
+                        idsQuery += $" '{guids[i]}')";
+                    }
+                    else
+                    {
+                        idsQuery += $"'{guids[i]}', ";
+                    }
+                }
+                var storedProcedureName = String.Format(Resource.Proc_DeleteMultiple, typeof(Employee).Name); ;
+                DynamicParameters value = new DynamicParameters();
+                
+                value.Add("@v_IdsQuery", idsQuery);
+                affetecRows = _connection.Execute(
+                                storedProcedureName,
+                                value,
+                                commandType: System.Data.CommandType.StoredProcedure);
+                return affetecRows;
+            }
 
+            
+        }
     }
 }

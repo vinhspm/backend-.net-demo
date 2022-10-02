@@ -153,6 +153,10 @@
     <value>proc_{0}_Delete</value>
     <comment>template string cho procedure xoá 1 bản ghi trong 1 bảng</comment>
   </data>
+  <data name="Proc_DeleteMultiple" xml:space="preserve">
+    <value>Proc_{0}_DeleteMultiple</value>
+    <comment>template string cho procedure xoá nhiều bản ghi trong 1 bảng</comment>
+  </data>
   <data name="Proc_Detail" xml:space="preserve">
     <value>proc_{0}_Detail</value>
     <comment>template string cho procedure lấy chi tiết 1 bản ghi trong 1 bảng</comment>

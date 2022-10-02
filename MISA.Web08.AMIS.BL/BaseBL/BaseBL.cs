@@ -270,7 +270,6 @@ namespace MISA.Web08.AMIS.BL
                 }
                 var notEmptyAttribute = (NotEmpty?)Attribute.GetCustomAttribute(prop, typeof(NotEmpty));
                 var notDuplicateAttribute = (NotDuplicate?)Attribute.GetCustomAttribute(prop, typeof(NotDuplicate));
-                var mustExistAttribute = (MustExisted?)Attribute.GetCustomAttribute(prop, typeof(MustExisted));
                 var emailAddressAttribute = (Email?)Attribute.GetCustomAttribute(prop, typeof(Email));
                 var fieldName = prop.Name;
                 var fieldValue = prop.GetValue(record);

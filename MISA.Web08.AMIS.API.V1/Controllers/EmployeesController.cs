@@ -2,6 +2,7 @@
 using MISA.Web08.AMIS.BL;
 using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
+using MISA.Web08.AMIS.Common.Resources;
 
 namespace MISA.Web08.AMIS.API.Controllers
 {
@@ -72,8 +73,34 @@ namespace MISA.Web08.AMIS.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
 
             }
-        } 
+        }
 
+        /// <summary>
+        /// xoá nhiều nhân viên trong bảng
+        /// </summary>
+        /// <param name="ids"></param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns></returns>
+        [HttpDelete("/multiple")]
+        public IActionResult MultipleDelete([FromBody] List<Guid> guids)
+        {
+            try
+            {
+                var result = _employeeBL.MultipleDelete(guids);
+                return StatusCode(StatusCodes.Status200OK, result.Data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                        AMISErrorCode.Exception,
+                        Resource.DevMsg_DeleteFailed,
+                        Resource.UserMsg_DeleteFailed,
+                        ex.Message,
+                        HttpContext.TraceIdentifier));
+
+            }
+        }
         #endregion
     }
 }

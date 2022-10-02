@@ -142,6 +142,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proc_{0}_DeleteMultiple.
+        /// </summary>
+        public static string Proc_DeleteMultiple {
+            get {
+                return ResourceManager.GetString("Proc_DeleteMultiple", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to proc_{0}_Detail.
         /// </summary>
         public static string Proc_Detail {

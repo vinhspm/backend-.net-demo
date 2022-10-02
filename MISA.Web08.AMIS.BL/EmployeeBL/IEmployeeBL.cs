@@ -27,5 +27,6 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>string newEmployeeCode</returns>
         public string GetNewEmployeeCode();
 
+        public ServiceResponse MultipleDelete(List<Guid> guids);
     }
 }

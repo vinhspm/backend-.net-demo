@@ -15,8 +15,6 @@ namespace MISA.Web08.AMIS.DL
     public class BaseDL<T> : IBaseDL<T>
     {
 
-        
-
         #region Method
 
         /// <summary>
