@@ -21,6 +21,14 @@ namespace MISA.Web08.AMIS.DL
             _connection = new MySqlConnection(DataContext.MySqlConnectionString);
         }
 
+        /// <summary>
+        /// phân trang nhân viên
+        /// created: vinhkt(30/09/2022)
+        /// </summary>
+        /// <param name="v_Offset"></param>
+        /// <param name="v_Limit"></param>
+        /// <param name="v_Where"></param>
+        /// <returns></returns>
         public Dictionary<string, object> GetEmployeesFilter(int v_Offset, int v_Limit, string v_Where)
         {
             var storedProcedureName = Resource.Proc_employee_Filter;
@@ -40,6 +48,11 @@ namespace MISA.Web08.AMIS.DL
             };
         }
 
+        /// <summary>
+        /// đếm tổng số nhân viên trong bảng
+        /// created: vinhkt(30/09/2022)
+        /// </summary>
+        /// <returns></returns>
         public int GetCountEmployees()
         {
             string storedProcedureName = String.Format(Resource.Proc_GetAllCount, typeof(Employee).Name);
@@ -50,6 +63,12 @@ namespace MISA.Web08.AMIS.DL
             return count;
 
         }
+
+        /// <summary>
+        /// lấy mã nhân viên lớn nhất
+        /// created: vinhkt(30/09/2022)
+        /// </summary>
+        /// <returns></returns>
         public string GetMaxEmployeeCode()
         {
 
@@ -63,6 +82,7 @@ namespace MISA.Web08.AMIS.DL
 
         /// <summary>
         /// xoá nhiều nhân viên
+        /// created: vinhkt(30/09/2022)
         /// </summary>
         /// <param name="guids"></param>
         /// <returns></returns>

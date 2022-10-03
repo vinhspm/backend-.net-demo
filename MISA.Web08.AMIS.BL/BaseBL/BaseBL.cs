@@ -302,20 +302,6 @@ namespace MISA.Web08.AMIS.BL
                     }
                 }
                 
-                //if (mustExistAttribute != null)
-                //{
-                //    T findDuplicate = _baseDL.FindDuplicate(fieldName, fieldValue.ToString());
-                //    if (findDuplicate == null)
-                //    {
-                //        return new ServiceResponse(false, new ErrorResult(
-                //            AMISErrorCode.MustExistInput,
-                //            Resource.DevMsg_ValidateFailed,
-                //            Resource.UserMsg_ValidateFailed,
-                //            fieldName,
-                //            ""));
-                //    }
-                //}
-
                 if (emailAddressAttribute != null)
                 {
                     if (fieldValue == null || fieldValue.ToString() == "")

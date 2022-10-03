@@ -27,6 +27,12 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>string newEmployeeCode</returns>
         public string GetNewEmployeeCode();
 
+        /// <summary>
+        /// hàm xoá nhiều nhân viên
+        /// created by: vinhkt(30/09/2022)
+        /// </summary>
+        /// <param name="guids"></param>
+        /// <returns></returns>
         public ServiceResponse MultipleDelete(List<Guid> guids);
     }
 }

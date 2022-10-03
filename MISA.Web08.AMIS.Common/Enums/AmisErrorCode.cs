@@ -12,6 +12,5 @@ namespace MISA.Web08.AMIS.Common
         InvalidInput = 002,
         NotNullInput = 003,
         DuplicateInput = 004,
-        MustExistInput = 005
     }
 }
