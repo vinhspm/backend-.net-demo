@@ -103,8 +103,9 @@ namespace MISA.Web08.AMIS.BL
         /// </summary>
         /// <param name="employeeFilter">string tìm kiếm nhân viên theo mã, tên</param>
         /// <returns></returns>
-        public File ExportAllEmployeesFilter(string employeeFilter)
+        public MemoryStream ExportAllEmployeesFilter(string employeeFilter)
         {
+            //List<Department> departments = _baseDL.GetAllRecords<Department>();
             string v_Where = "";
             if (employeeFilter != null)
             {
@@ -112,12 +113,28 @@ namespace MISA.Web08.AMIS.BL
             }
             List<Employee> employees = _employeeDL.ExportAllEmployeesFilter(v_Where);
             DataTable dt = new DataTable("Grid");
-            dt.Columns.AddRange(new DataColumn[2] { new DataColumn("EmpID"),
-                                     new DataColumn("EmpName") });
-
+            Employee e = new Employee();
+            foreach (PropertyInfo prop in e.GetType().GetProperties())
+            {
+                var showInSheetAttribute = (ShowInSheetAttribute?)Attribute.GetCustomAttribute(prop, typeof(ShowInSheetAttribute));
+                if (showInSheetAttribute != null)
+                {
+                    dt.Columns.Add(new DataColumn(Employee.TranslatePropName()[prop.Name]));
+                }
+            }
             foreach (var emp in employees)
             {
-                dt.Rows.Add(emp.EmployeeCode, emp.FullName);
+                DataRow row = dt.NewRow();
+                foreach (PropertyInfo prop in emp.GetType().GetProperties())
+                {
+                    var showInSheetAttribute = (ShowInSheetAttribute?)Attribute.GetCustomAttribute(prop, typeof(ShowInSheetAttribute));
+                    if (showInSheetAttribute != null)
+                    {
+                        row[Employee.TranslatePropName()[prop.Name]] = prop.GetValue(emp);
+                    }
+                }
+                dt.Rows.Add(row);
+                
             }
             using (XLWorkbook wb = new XLWorkbook())
             {
@@ -125,10 +142,11 @@ namespace MISA.Web08.AMIS.BL
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);
-                    return new File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                    return stream;
                 }
             }
         }
+
     }
 
     #endregion

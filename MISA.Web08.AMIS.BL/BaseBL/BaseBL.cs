@@ -20,7 +20,7 @@ namespace MISA.Web08.AMIS.BL
     {
         #region Field
 
-        private IBaseDL<T> _baseDL;
+        protected IBaseDL<T> _baseDL;
 
         #endregion
 

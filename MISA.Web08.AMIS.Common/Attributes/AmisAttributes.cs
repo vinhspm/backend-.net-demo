@@ -46,4 +46,15 @@ namespace MISA.Web08.AMIS.Common
 
     }
 
+
+    /// <summary>
+    /// đánh dấu property là xuất hiện trong sheet
+    /// author: vinhkt (05/10/2022)
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class ShowInSheetAttribute: Attribute
+    {
+
+    }
+
 }

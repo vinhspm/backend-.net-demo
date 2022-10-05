@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using MISA.Web08.AMIS.BL;
 using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
 using MISA.Web08.AMIS.Common.Resources;
+using System.IO;
 
 namespace MISA.Web08.AMIS.API.Controllers
 {
@@ -98,6 +100,29 @@ namespace MISA.Web08.AMIS.API.Controllers
                         Resource.UserMsg_DeleteFailed,
                         ex.Message,
                         HttpContext.TraceIdentifier));
+
+            }
+        }
+
+        /// <summary>
+        /// xuất file excel các nhân viên theo filter
+        /// </summary>
+        /// created: vinhkt(30/09/2022)
+        /// <returns></returns>
+        [HttpGet]
+        [Route("ExportAllEmployeesFilter")]
+        public IActionResult ExportAllEmployeesFilter([FromQuery] string? employeeFilter)
+        {
+            try
+            {
+                MemoryStream employeesSheetStream = _employeeBL.ExportAllEmployeesFilter(employeeFilter);
+
+                return File(employeesSheetStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
 
             }
         }

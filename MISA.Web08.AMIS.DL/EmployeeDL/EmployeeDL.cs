@@ -127,8 +127,12 @@ namespace MISA.Web08.AMIS.DL
             string storedProcedureName = Resource.proc_employee_GetAllFilter;
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
+                DynamicParameters value = new DynamicParameters();
+
+                value.Add("@v_Where", v_Where);
                 var records = _connection.Query<Employee>(
                                 storedProcedureName,
+                                value,
                                 commandType: System.Data.CommandType.StoredProcedure);
                 return records.ToList<Employee>();
             }

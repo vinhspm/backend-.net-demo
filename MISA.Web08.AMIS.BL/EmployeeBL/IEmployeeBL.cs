@@ -1,4 +1,5 @@
-﻿using MISA.Web08.AMIS.Common;
+﻿using ClosedXML.Excel;
+using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,6 @@ namespace MISA.Web08.AMIS.BL
         /// </summary>
         /// <param name="employeeFilter">string tìm kiếm nhân viên theo mã, tên</param>
         /// <returns></returns>
-        public File ExportAllEmployeesFilter(string employeeFilter);
+        public MemoryStream ExportAllEmployeesFilter(string employeeFilter);
     }
 }
