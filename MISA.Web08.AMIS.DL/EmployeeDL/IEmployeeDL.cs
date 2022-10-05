@@ -17,5 +17,7 @@ namespace MISA.Web08.AMIS.DL
         public int GetCountEmployees();
 
         public int MultipleDelete(List<Guid> guids);
+
+        public List<Employee> ExportAllEmployeesFilter(string v_Where);
     }
 }

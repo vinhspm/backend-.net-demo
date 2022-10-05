@@ -169,6 +169,10 @@
     <value>proc_employee_Filter</value>
     <comment>template string cho procedure lấy nhân viên trong bảng theo phân trang</comment>
   </data>
+  <data name="proc_employee_GetAllFilter" xml:space="preserve">
+    <value>proc_employee_GetAllFilter</value>
+    <comment>tên procedure lấy tất cả nhân viên theo filter ( không phân trang )</comment>
+  </data>
   <data name="Proc_employee_Max" xml:space="preserve">
     <value>proc_employee_max</value>
     <comment>template string cho procedure lấy mã nhân viên lớn nhất trong bảng nhân viên</comment>

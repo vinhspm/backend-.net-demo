@@ -1,9 +1,11 @@
-﻿using MISA.Web08.AMIS.Common;
+﻿using ClosedXML.Excel;
+using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
 using MISA.Web08.AMIS.Common.Resources;
 using MISA.Web08.AMIS.DL;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -12,17 +14,17 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.BL
 {
-    public class EmployeeBL :BaseBL<Employee>, IEmployeeBL
+    public class EmployeeBL : BaseBL<Employee>, IEmployeeBL
     {
         #region Field
-		
-        private IEmployeeDL _employeeDL; 
 
-	    #endregion
+        private IEmployeeDL _employeeDL;
+
+        #endregion
 
         #region Constructor
 
-        public EmployeeBL(IEmployeeDL employeeDL): base(employeeDL)
+        public EmployeeBL(IEmployeeDL employeeDL) : base(employeeDL)
         {
             _employeeDL = employeeDL;
         }
@@ -41,13 +43,17 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>PagingData</returns>
         public PagingData GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter)
         {
+            // tính offset, gán giá trị cho string v_where
             int offset = pageSize * (pageNumber - 1);
             string v_Where = "";
             if (employeeFilter != null)
             {
                 v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
             }
+
+            // gọi đến dl để query vào db
             var result = _employeeDL.GetEmployeesFilter(offset, pageSize, v_Where);
+
             var totalRecord = result["Total"];
             int isAdditionalLastPage = Convert.ToInt32(totalRecord) % Convert.ToInt32(pageSize);
             if (isAdditionalLastPage > 0)
@@ -55,10 +61,10 @@ namespace MISA.Web08.AMIS.BL
                 isAdditionalLastPage = 1;
             }
             var totalPage = Convert.ToInt32(totalRecord) / Convert.ToInt32(pageSize) + isAdditionalLastPage;
-            var resultArr =(List<Employee>) result["PageData"];
+            var resultArr = (List<Employee>)result["PageData"];
             var currentPageRecords = resultArr.Count;
             return new PagingData(
-            result["PageData"], Convert.ToInt32(totalRecord), totalPage, pageNumber, currentPageRecords);
+                result["PageData"], Convert.ToInt32(totalRecord), totalPage, pageNumber, currentPageRecords);
         }
 
         /// <summary>
@@ -87,11 +93,43 @@ namespace MISA.Web08.AMIS.BL
         public ServiceResponse MultipleDelete(List<Guid> guids)
         {
             int affectedRecords = _employeeDL.MultipleDelete(guids);
-            
+
             return new ServiceResponse(true, new MultipleDeleteResult(affectedRecords, guids.Count - affectedRecords));
-            
+
         }
-    } 
+
+        /// <summary>
+        /// xuất file excel tất cả nhân viên theo filter
+        /// </summary>
+        /// <param name="employeeFilter">string tìm kiếm nhân viên theo mã, tên</param>
+        /// <returns></returns>
+        public File ExportAllEmployeesFilter(string employeeFilter)
+        {
+            string v_Where = "";
+            if (employeeFilter != null)
+            {
+                v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
+            }
+            List<Employee> employees = _employeeDL.ExportAllEmployeesFilter(v_Where);
+            DataTable dt = new DataTable("Grid");
+            dt.Columns.AddRange(new DataColumn[2] { new DataColumn("EmpID"),
+                                     new DataColumn("EmpName") });
+
+            foreach (var emp in employees)
+            {
+                dt.Rows.Add(emp.EmployeeCode, emp.FullName);
+            }
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return new File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                }
+            }
+        }
+    }
 
     #endregion
 }

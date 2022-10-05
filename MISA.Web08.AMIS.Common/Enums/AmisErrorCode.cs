@@ -8,9 +8,13 @@ namespace MISA.Web08.AMIS.Common
 {
     public enum AMISErrorCode
     {
+        // ngoại lệ
         Exception = 001,
+        // input sai
         InvalidInput = 002,
+        // không được để trống
         NotNullInput = 003,
+        // không được trùng lặp
         DuplicateInput = 004,
     }
 }

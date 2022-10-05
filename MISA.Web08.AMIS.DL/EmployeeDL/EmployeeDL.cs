@@ -116,5 +116,22 @@ namespace MISA.Web08.AMIS.DL
 
             
         }
+
+        /// <summary>
+        /// query vào db lấy tất cả nhân viên theo filter
+        /// </summary>
+        /// <param name="v_Where"></param>
+        /// <returns></returns>
+        public List<Employee> ExportAllEmployeesFilter(string v_Where)
+        {
+            string storedProcedureName = Resource.proc_employee_GetAllFilter;
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                var records = _connection.Query<Employee>(
+                                storedProcedureName,
+                                commandType: System.Data.CommandType.StoredProcedure);
+                return records.ToList<Employee>();
+            }
+        }
     }
 }

@@ -113,6 +113,8 @@ namespace MISA.Web08.AMIS.BL
                     foreach (PropertyInfo prop in record.GetType().GetProperties())
                     {
                         var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
+                        
+                        // gán giá trị cho id của bản ghi
                         if (primaryKeyAttribute != null)
                         {
                             prop.SetValue(record, recordId, null);
@@ -121,14 +123,17 @@ namespace MISA.Web08.AMIS.BL
                         var fieldValue = prop.GetValue(record);
                         if (fieldValue != null)
                         {
+                            // định dạng chuẩn cho datetime
                             if (fieldValue.GetType() == typeof(DateTime))
                             {
                                 fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
                             }
+                            // gán giá trị cho giới tính từ enum
                             if (fieldValue.GetType() == typeof(Gender))
                             {
                                 fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
                             }
+                            // gán giá trị v_Columns truyền vào procedure
                             if (v_Columns.Length > 0)
                             {
                                 v_Columns = v_Columns + ", " + fieldName;
@@ -137,6 +142,8 @@ namespace MISA.Web08.AMIS.BL
                             {
                                 v_Columns = v_Columns + fieldName;
                             }
+
+                            // gán giá trị v_Values truyền vào procedure
                             if (v_Values.Length > 0)
                             {
                                 v_Values = v_Values + ", " + $"'{fieldValue}'";
@@ -197,6 +204,7 @@ namespace MISA.Web08.AMIS.BL
                     foreach (PropertyInfo prop in record.GetType().GetProperties())
                     {
                         var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
+                        // gán giá trị cho id của record từ route truyền vào
                         if (primaryKeyAttribute != null)
                         {
                             prop.SetValue(record, recordId, null);
@@ -206,10 +214,12 @@ namespace MISA.Web08.AMIS.BL
                         var fieldValue = prop.GetValue(record);
                         if (fieldValue != null)
                         {
+                            //format ngày tháng để truyền vào db
                             if (fieldValue.GetType() == typeof(DateTime))
                             {
                                 fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
                             }
+                            //lấy giá trị của gender dựa trên enum
                             if (fieldValue.GetType() == typeof(Gender))
                             {
                                 fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
@@ -264,16 +274,20 @@ namespace MISA.Web08.AMIS.BL
             {
                 var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
                 
+                // lấy fieldname của property đánh dấu là primarykey
                 if (primaryKeyAttribute != null)
                 {
                     primaryKeyFieldName = prop.Name;
                 }
+
+                // lấy giá trị của các attribute
                 var notEmptyAttribute = (NotEmpty?)Attribute.GetCustomAttribute(prop, typeof(NotEmpty));
                 var notDuplicateAttribute = (NotDuplicate?)Attribute.GetCustomAttribute(prop, typeof(NotDuplicate));
                 var emailAddressAttribute = (Email?)Attribute.GetCustomAttribute(prop, typeof(Email));
                 var fieldName = prop.Name;
                 var fieldValue = prop.GetValue(record);
 
+                // validate property not null/empty
                 if (notEmptyAttribute != null)
                 {
                     if (fieldValue == null || fieldValue.ToString() == "")
@@ -287,6 +301,7 @@ namespace MISA.Web08.AMIS.BL
                     }
                 }
 
+                // validate property không duplicate
                 if (notDuplicateAttribute != null)
                 {
                     T findDuplicate = _baseDL.FindDuplicate(fieldName, fieldValue.ToString());
@@ -302,6 +317,7 @@ namespace MISA.Web08.AMIS.BL
                     }
                 }
                 
+                // validate email
                 if (emailAddressAttribute != null)
                 {
                     if (fieldValue == null || fieldValue.ToString() == "")

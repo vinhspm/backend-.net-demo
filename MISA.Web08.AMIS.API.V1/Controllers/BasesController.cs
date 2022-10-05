@@ -111,7 +111,6 @@ namespace MISA.Web08.AMIS.API.Controllers
                 if (result.Success)
                 {
                     return StatusCode(StatusCodes.Status200OK, result.Data);
-
                 }
                 else
                 {

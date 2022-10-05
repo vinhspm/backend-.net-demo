@@ -81,7 +81,7 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// <param name="ids"></param>
         /// created by vinhkt(30/09/2022)
         /// <returns></returns>
-        [HttpDelete("/multiple")]
+        [HttpPut("multiple-delete")]
         public IActionResult MultipleDelete([FromBody] List<Guid> guids)
         {
             try

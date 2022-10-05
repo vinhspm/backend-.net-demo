@@ -178,6 +178,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to proc_employee_GetAllFilter.
+        /// </summary>
+        public static string proc_employee_GetAllFilter {
+            get {
+                return ResourceManager.GetString("proc_employee_GetAllFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to proc_employee_max.
         /// </summary>
         public static string Proc_employee_Max {

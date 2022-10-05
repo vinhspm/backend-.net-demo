@@ -34,5 +34,12 @@ namespace MISA.Web08.AMIS.BL
         /// <param name="guids"></param>
         /// <returns></returns>
         public ServiceResponse MultipleDelete(List<Guid> guids);
+
+        /// <summary>
+        /// xuất file excel tất cả nhân viên theo filter
+        /// </summary>
+        /// <param name="employeeFilter">string tìm kiếm nhân viên theo mã, tên</param>
+        /// <returns></returns>
+        public File ExportAllEmployeesFilter(string employeeFilter);
     }
 }
