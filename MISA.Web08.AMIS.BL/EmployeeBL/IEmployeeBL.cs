@@ -12,35 +12,35 @@ namespace MISA.Web08.AMIS.BL
     public interface IEmployeeBL: IBaseBL<Employee>
     {
         /// <summary>
-        /// lấy danh sách nhân viên theo phân trang
+        /// lấy thông tin nhân viên theo phân trang
         /// </summary>
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <param name="employeeFilter"></param>
-        /// created by: vinhkt(30/09/2022)
-        /// <returns>PagingData</returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         public PagingData GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter);
 
         /// <summary>
         /// lấy mã nhân viên mới
-        /// created by: vinhkt(30/09/2022)
         /// </summary>
-        /// <returns>string newEmployeeCode</returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>mã nhân viên mới</returns>
         public string GetNewEmployeeCode();
 
         /// <summary>
-        /// hàm xoá nhiều nhân viên
-        /// created by: vinhkt(30/09/2022)
+        /// xoá nhiều nhân viên trong bảng
         /// </summary>
-        /// <param name="guids"></param>
-        /// <returns></returns>
+        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public ServiceResponse MultipleDelete(List<Guid> guids);
 
         /// <summary>
-        /// xuất file excel tất cả nhân viên theo filter
+        /// xuất file excel các nhân viên theo filter
         /// </summary>
-        /// <param name="employeeFilter">string tìm kiếm nhân viên theo mã, tên</param>
-        /// <returns></returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>file excel cần download</returns>
         public MemoryStream ExportAllEmployeesFilter(string employeeFilter);
     }
 }

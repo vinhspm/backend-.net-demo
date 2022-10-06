@@ -124,6 +124,33 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nữ.
+        /// </summary>
+        public static string Gender_Female_VN {
+            get {
+                return ResourceManager.GetString("Gender_Female_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nam.
+        /// </summary>
+        public static string Gender_Male_VN {
+            get {
+                return ResourceManager.GetString("Gender_Male_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Khác.
+        /// </summary>
+        public static string Gender_Other_VN {
+            get {
+                return ResourceManager.GetString("Gender_Other_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NV.
         /// </summary>
         public static string New_EmployeeCode_Prefix {

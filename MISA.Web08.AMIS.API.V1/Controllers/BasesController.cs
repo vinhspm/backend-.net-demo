@@ -58,7 +58,7 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// <summary>
         /// thêm mới một bản ghi vào bảng
         /// </summary>
-        /// <param name="record"></param>
+        /// <param name="record">bản ghi cần thêm mới</param>
         /// <returns>id của bản ghi mới trong bảng</returns>
         [HttpPost()]
         public IActionResult InsertRecord([FromBody] T record)
@@ -98,8 +98,9 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// <summary>
         /// sửa một bản ghi vào bảng
         /// </summary>
-        /// <param name="record"></param>
-        /// <returns>số bản ghi bị thay đổi trong bảng</returns>
+        /// <param name="record">bản ghi cần sửa</param>
+        /// <param name="id"> id bản ghi cần sửa</param>
+        /// <returns>1 nếu thành công</returns>
         [HttpPut("{id}")]
         public IActionResult UpdateRecord([FromRoute] Guid id, [FromBody] T record)
         {
@@ -138,9 +139,9 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// <summary>
         /// xoá một bản ghi trong bảng
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">id của bản ghi cần xoá</param>
         /// created by vinhkt(30/09/2022)
-        /// <returns></returns>
+        /// <returns>1 nếu thành công</returns>
         [HttpDelete("{id}")]
         public IActionResult DeleteRecordById([FromRoute] Guid id)
         {
@@ -181,7 +182,7 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// lấy chi tiết 1 bản ghi
         /// </summary>
         /// <param name="id"></param>
-        /// <returns>record</returns>
+        /// <returns>bản ghi có id cần tìm</returns>
         /// created by: vinhkt(30/09/2022)
         [HttpGet("{id}")]
         public IActionResult GetEmployeeById([FromRoute] Guid id)

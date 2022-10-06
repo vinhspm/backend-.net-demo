@@ -14,21 +14,18 @@ namespace MISA.Web08.AMIS.DL
 {
     public class EmployeeDL : BaseDL<Employee>, IEmployeeDL
     {
-        private MySqlConnection _connection;
-
         public EmployeeDL()
         {
-            _connection = new MySqlConnection(DataContext.MySqlConnectionString);
         }
 
         /// <summary>
-        /// phân trang nhân viên
-        /// created: vinhkt(30/09/2022)
+        /// lấy thông tin nhân viên theo phân trang
         /// </summary>
-        /// <param name="v_Offset"></param>
-        /// <param name="v_Limit"></param>
-        /// <param name="v_Where"></param>
-        /// <returns></returns>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="employeeFilter"></param>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         public Dictionary<string, object> GetEmployeesFilter(int v_Offset, int v_Limit, string v_Where)
         {
             var storedProcedureName = Resource.Proc_employee_Filter;
@@ -38,54 +35,45 @@ namespace MISA.Web08.AMIS.DL
             values.Add("@v_Limit", v_Limit);
             values.Add("@v_Where", v_Where);
 
-
-            var response = _connection.QueryMultiple(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure);
-            var employees = response.Read<Employee>().ToList();
-            var count = response.Read<int>().First();
-            return new Dictionary<string, object>{
-                { "PageData", employees},
-                { "Total", count }
-            };
-        }
-
-        /// <summary>
-        /// đếm tổng số nhân viên trong bảng
-        /// created: vinhkt(30/09/2022)
-        /// </summary>
-        /// <returns></returns>
-        public int GetCountEmployees()
-        {
-            string storedProcedureName = String.Format(Resource.Proc_GetAllCount, typeof(Employee).Name);
-
-            var count = _connection.QueryFirstOrDefault<int>(
-                storedProcedureName,
-                commandType: System.Data.CommandType.StoredProcedure);
-            return count;
-
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                var response = _connection.QueryMultiple(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure);
+                var employees = response.Read<Employee>().ToList();
+                var count = response.Read<int>().First();
+                return new Dictionary<string, object>{
+                    { "PageData", employees},
+                    { "Total", count }
+                };
+            }
+                
         }
 
         /// <summary>
         /// lấy mã nhân viên lớn nhất
-        /// created: vinhkt(30/09/2022)
         /// </summary>
-        /// <returns></returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>mã nhân viên lớn nhất</returns>
         public string GetMaxEmployeeCode()
         {
 
             string storedProcedureName = String.Format(Resource.Proc_employee_Max, typeof(Employee).Name);
-
-            var maxEmployeeCode = _connection.QueryFirstOrDefault<string>(
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                var maxEmployeeCode = _connection.QueryFirstOrDefault<string>(
                 storedProcedureName,
                 commandType: System.Data.CommandType.StoredProcedure);
-            return maxEmployeeCode;
+                return maxEmployeeCode;
+            }
+
+                
         }
 
         /// <summary>
-        /// xoá nhiều nhân viên
-        /// created: vinhkt(30/09/2022)
+        /// xoá nhiều nhân viên trong bảng
         /// </summary>
-        /// <param name="guids"></param>
-        /// <returns></returns>
+        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public int MultipleDelete(List<Guid> guids)
         {
             int affetecRows = 0;
@@ -118,10 +106,10 @@ namespace MISA.Web08.AMIS.DL
         }
 
         /// <summary>
-        /// query vào db lấy tất cả nhân viên theo filter
+        /// xuất file excel các nhân viên theo filter
         /// </summary>
-        /// <param name="v_Where"></param>
-        /// <returns></returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>file excel cần download</returns>
         public List<Employee> ExportAllEmployeesFilter(string v_Where)
         {
             string storedProcedureName = Resource.proc_employee_GetAllFilter;

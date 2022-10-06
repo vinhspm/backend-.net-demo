@@ -145,6 +145,18 @@
     <value>One or more validation errors occurred</value>
     <comment>Message cho dev đọc khi validate dữ liệu đầu vào thất bại</comment>
   </data>
+  <data name="Gender_Female_VN" xml:space="preserve">
+    <value>Nữ</value>
+    <comment>text tiếng việt cho trường giới tính nữ</comment>
+  </data>
+  <data name="Gender_Male_VN" xml:space="preserve">
+    <value>Nam</value>
+    <comment>text tiếng việt cho trường giới tính nam</comment>
+  </data>
+  <data name="Gender_Other_VN" xml:space="preserve">
+    <value>Khác</value>
+    <comment>text tiếng việt cho trường giới tính khác</comment>
+  </data>
   <data name="New_EmployeeCode_Prefix" xml:space="preserve">
     <value>NV</value>
     <comment>prefix của mã nhân viên</comment>

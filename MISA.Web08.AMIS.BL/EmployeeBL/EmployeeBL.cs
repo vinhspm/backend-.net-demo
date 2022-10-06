@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
+using MISA.Web08.AMIS.Common.Enums;
 using MISA.Web08.AMIS.Common.Resources;
 using MISA.Web08.AMIS.DL;
 using System;
@@ -19,14 +20,19 @@ namespace MISA.Web08.AMIS.BL
         #region Field
 
         private IEmployeeDL _employeeDL;
+        private IDepartmentBL _departmentBL;
+        private IPositionDL _positionBL;
+
 
         #endregion
 
         #region Constructor
 
-        public EmployeeBL(IEmployeeDL employeeDL) : base(employeeDL)
+        public EmployeeBL(IEmployeeDL employeeDL, IDepartmentBL departmentBL, IPositionDL positionBL) : base(employeeDL)
         {
             _employeeDL = employeeDL;
+            _departmentBL = departmentBL;
+            _positionBL = positionBL;
         }
 
         #endregion
@@ -34,13 +40,13 @@ namespace MISA.Web08.AMIS.BL
         #region Method
 
         /// <summary>
-        /// lấy danh sách nhân viên theo phân trang
+        /// lấy thông tin nhân viên theo phân trang
         /// </summary>
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <param name="employeeFilter"></param>
-        /// created by: vinhkt(30/09/2022)
-        /// <returns>PagingData</returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         public PagingData GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter)
         {
             // tính offset, gán giá trị cho string v_where
@@ -69,9 +75,9 @@ namespace MISA.Web08.AMIS.BL
 
         /// <summary>
         /// lấy mã nhân viên mới
-        /// created by: vinhkt(30/09/2022)
         /// </summary>
-        /// <returns>string newEmployeeCode</returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>mã nhân viên mới</returns>
         public string GetNewEmployeeCode()
         {
             string maxEmployeeCode = _employeeDL.GetMaxEmployeeCode();
@@ -85,11 +91,11 @@ namespace MISA.Web08.AMIS.BL
         }
 
         /// <summary>
-        /// hàm xoá nhiều nhân viên
-        /// created by: vinhkt(30/09/2022)
+        /// xoá nhiều nhân viên trong bảng
         /// </summary>
-        /// <param name="guids"></param>
-        /// <returns></returns>
+        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public ServiceResponse MultipleDelete(List<Guid> guids)
         {
             int affectedRecords = _employeeDL.MultipleDelete(guids);
@@ -99,21 +105,23 @@ namespace MISA.Web08.AMIS.BL
         }
 
         /// <summary>
-        /// xuất file excel tất cả nhân viên theo filter
+        /// xuất file excel các nhân viên theo filter
         /// </summary>
-        /// <param name="employeeFilter">string tìm kiếm nhân viên theo mã, tên</param>
-        /// <returns></returns>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>file excel cần download</returns>
         public MemoryStream ExportAllEmployeesFilter(string employeeFilter)
         {
-            //List<Department> departments = _baseDL.GetAllRecords<Department>();
             string v_Where = "";
             if (employeeFilter != null)
             {
                 v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
             }
             List<Employee> employees = _employeeDL.ExportAllEmployeesFilter(v_Where);
+            var departments = _departmentBL.GetAllRecords().ToList();
+            var positions = _positionBL.GetAllRecords().ToList();
             DataTable dt = new DataTable("Grid");
             Employee e = new Employee();
+            // tạo header cho file excel
             foreach (PropertyInfo prop in e.GetType().GetProperties())
             {
                 var showInSheetAttribute = (ShowInSheetAttribute?)Attribute.GetCustomAttribute(prop, typeof(ShowInSheetAttribute));
@@ -122,6 +130,7 @@ namespace MISA.Web08.AMIS.BL
                     dt.Columns.Add(new DataColumn(Employee.TranslatePropName()[prop.Name]));
                 }
             }
+            // add data vào file excel
             foreach (var emp in employees)
             {
                 DataRow row = dt.NewRow();
@@ -130,7 +139,42 @@ namespace MISA.Web08.AMIS.BL
                     var showInSheetAttribute = (ShowInSheetAttribute?)Attribute.GetCustomAttribute(prop, typeof(ShowInSheetAttribute));
                     if (showInSheetAttribute != null)
                     {
-                        row[Employee.TranslatePropName()[prop.Name]] = prop.GetValue(emp);
+
+                        var fieldName = prop.Name;
+                        var fieldValue = prop.GetValue(emp);
+                        if(fieldValue != null)
+                        {
+                            if (prop.Name == nameof(Employee.Gender))
+                            {
+                                if(fieldValue.ToString() == (Gender.Male).ToString())
+                                {
+                                    fieldValue = Resource.Gender_Male_VN;
+                                }
+                                if (fieldValue.ToString() == (Gender.Female).ToString())
+                                {
+                                    fieldValue = Resource.Gender_Female_VN;
+                                }
+                                if (fieldValue.ToString() == (Gender.Other).ToString())
+                                {
+                                    fieldValue = Resource.Gender_Other_VN;
+                                }
+                            }
+                            else if (fieldValue.GetType() == typeof(DateTime))
+                            {
+                                fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("dd/MM/yyyy");
+                            }
+                            else if (prop.Name == nameof(Department.DepartmentId) )
+                            {
+                                fieldValue = departments.Find(dpm => dpm.DepartmentId == emp.DepartmentId).DepartmentName;
+                            }
+                            else if (prop.Name == nameof(Position.PositionId) )
+                            {
+                                fieldValue = positions.Find(pst => pst.PositionId == emp.PositionId).PositionName;
+                            }
+                        }
+                        
+
+                        row[Employee.TranslatePropName()[prop.Name]] = fieldValue;
                     }
                 }
                 dt.Rows.Add(row);

@@ -35,7 +35,7 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// <param name="pageNumber"></param>
         /// <param name="employeeFilter"></param>
         /// created: vinhkt(30/09/2022)
-        /// <returns></returns>
+        /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         [HttpGet]
         [Route("filter")]
         public IActionResult GetEmployeesFilter([FromQuery] int pageSize, [FromQuery] int pageNumber, [FromQuery] string? employeeFilter)
@@ -58,7 +58,7 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// lấy mã nhân viên mới
         /// </summary>
         /// created: vinhkt(30/09/2022)
-        /// <returns></returns>
+        /// <returns>mã nhân viên mới</returns>
         [HttpGet]
         [Route("NewEmployeeCode")]
         public IActionResult GetNewEmployeeCode()
@@ -80,9 +80,9 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// <summary>
         /// xoá nhiều nhân viên trong bảng
         /// </summary>
-        /// <param name="ids"></param>
+        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
         /// created by vinhkt(30/09/2022)
-        /// <returns></returns>
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         [HttpPut("multiple-delete")]
         public IActionResult MultipleDelete([FromBody] List<Guid> guids)
         {
@@ -108,7 +108,7 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// xuất file excel các nhân viên theo filter
         /// </summary>
         /// created: vinhkt(30/09/2022)
-        /// <returns></returns>
+        /// <returns>file excel cần download</returns>
         [HttpGet]
         [Route("ExportAllEmployeesFilter")]
         public IActionResult ExportAllEmployeesFilter([FromQuery] string? employeeFilter)

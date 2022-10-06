@@ -73,7 +73,7 @@ namespace MISA.Web08.AMIS.Common.Entities
         public static Dictionary<string, string> TranslatePropName()
         {
             return new Dictionary<string, string> {
-                { "EmployeeCode", "Mã nhân viên" },
+                {"EmployeeCode", "Mã nhân viên" },
                 {"FullName", "Tên nhân viên" },
                 {"Gender", "Giới tính" },
                 {"DateOfBirth", "Ngày sinh" },
