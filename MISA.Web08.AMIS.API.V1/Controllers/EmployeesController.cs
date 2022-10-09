@@ -117,7 +117,7 @@ namespace MISA.Web08.AMIS.API.Controllers
             {
                 MemoryStream employeesSheetStream = _employeeBL.ExportAllEmployeesFilter(employeeFilter);
 
-                return File(employeesSheetStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Grid.xlsx");
+                return File(employeesSheetStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Danh sách nhân viên.xlsx");
             }
             catch (Exception ex)
             {

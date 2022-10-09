@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -72,11 +73,23 @@ namespace MISA.Web08.AMIS.DL
 
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
-
+                _connection.Open();
+                var trans = _connection.BeginTransaction();
                 var storedProcedureName = String.Format(Resource.Proc_Insert, typeof(T).Name);
-
-                affetecRows = _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure);
-
+                try
+                {
+                    affetecRows = _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure, transaction: trans);
+                    trans.Commit();
+                }
+                catch (Exception)
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    _connection.Close();
+                }  
+              
             }
 
             if (affetecRows > 0)
