@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.BL
@@ -54,7 +55,7 @@ namespace MISA.Web08.AMIS.BL
         public ServiceResponse GetRecordById(Guid id)
         {
             T record = _baseDL.GetRecordById(id);
-            if(record == null)
+            if (record == null)
             {
                 return new ServiceResponse(false, null);
             }
@@ -99,69 +100,21 @@ namespace MISA.Web08.AMIS.BL
         /// <returns></returns>
         public ServiceResponse InsertRecord(T record)
         {
+            
             var validateResponse = ValidateFormBody(record, Guid.NewGuid());
-            if(!validateResponse.Success)
+            if (!validateResponse.Success)
             {
                 return validateResponse;
-            } else
+            }
+            
+            else
             {
                 try
                 {
-                    var v_Columns = "";
-                    var v_Values = "";
-                    Guid recordId = Guid.NewGuid();
-                    foreach (PropertyInfo prop in record.GetType().GetProperties())
+                    var res = _baseDL.InsertRecord(record);
+                    if (res.Success)
                     {
-                        var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
-                        
-                        // gán giá trị cho id của bản ghi
-                        if (primaryKeyAttribute != null)
-                        {
-                            prop.SetValue(record, recordId, null);
-                        }
-                        var fieldName = prop.Name;
-                        var fieldValue = prop.GetValue(record);
-                        if (fieldValue != null)
-                        {
-                            // định dạng chuẩn cho datetime
-                            if (fieldValue.GetType() == typeof(DateTime))
-                            {
-                                fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
-                            }
-                            // gán giá trị cho giới tính từ enum
-                            if (fieldValue.GetType() == typeof(Gender))
-                            {
-                                fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
-                            }
-                            // gán giá trị v_Columns truyền vào procedure
-                            if (v_Columns.Length > 0)
-                            {
-                                v_Columns = v_Columns + ", " + fieldName;
-                            }
-                            else
-                            {
-                                v_Columns = v_Columns + fieldName;
-                            }
-
-                            // gán giá trị v_Values truyền vào procedure
-                            if (v_Values.Length > 0)
-                            {
-                                v_Values = v_Values + ", " + $"'{fieldValue}'";
-                            }
-                            else
-                            {
-                                v_Values = v_Values + $"'{fieldValue}'";
-                            }
-
-                        }
-
-                    }
-                    v_Columns = $"({v_Columns})";
-                    v_Values = $"({v_Values})";
-                    var res = _baseDL.InsertRecord(v_Columns, v_Values);
-                    if (res == QueryResult.Success)
-                    {
-                        return new ServiceResponse(true, recordId);
+                        return new ServiceResponse(true, res.Data);
                     }
                     else
                     {
@@ -179,7 +132,7 @@ namespace MISA.Web08.AMIS.BL
                     return new ServiceResponse(false, ex.Message);
                 }
             }
-            
+
         }
 
 
@@ -199,45 +152,8 @@ namespace MISA.Web08.AMIS.BL
             {
                 try
                 {
-                    var v_Query = "";
-                    Guid recordId = id;
-                    foreach (PropertyInfo prop in record.GetType().GetProperties())
-                    {
-                        var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
-                        // gán giá trị cho id của record từ route truyền vào
-                        if (primaryKeyAttribute != null)
-                        {
-                            prop.SetValue(record, recordId, null);
-                        }
 
-                        var fieldName = prop.Name;
-                        var fieldValue = prop.GetValue(record);
-                        if (fieldValue != null)
-                        {
-                            //format ngày tháng để truyền vào db
-                            if (fieldValue.GetType() == typeof(DateTime))
-                            {
-                                fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
-                            }
-                            //lấy giá trị của gender dựa trên enum
-                            if (fieldValue.GetType() == typeof(Gender))
-                            {
-                                fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
-                            }
-                            var fieldUpdateString = fieldName + " = " + $"\"{fieldValue}\"";
-                            if (v_Query.Length > 0)
-                            {
-                                v_Query += ", " + fieldUpdateString;
-                            }
-                            else
-                            {
-                                v_Query += fieldUpdateString;
-                            }
-
-                        }
-
-                    }
-                    var res = _baseDL.UpdateRecord(id, v_Query);
+                    var res = _baseDL.UpdateRecord(id, record);
                     if (res == QueryResult.Success)
                     {
                         return new ServiceResponse(true, res);
@@ -273,7 +189,7 @@ namespace MISA.Web08.AMIS.BL
             foreach (PropertyInfo prop in record.GetType().GetProperties())
             {
                 var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
-                
+
                 // lấy fieldname của property đánh dấu là primarykey
                 if (primaryKeyAttribute != null)
                 {
@@ -286,6 +202,42 @@ namespace MISA.Web08.AMIS.BL
                 var emailAddressAttribute = (Email?)Attribute.GetCustomAttribute(prop, typeof(Email));
                 var fieldName = prop.Name;
                 var fieldValue = prop.GetValue(record);
+
+                //validate ngày tháng không được quá ngày hiện tại
+
+                if (fieldValue != null)
+                {
+                    if (fieldValue.GetType() == typeof(DateTime))
+                    {
+                        DateTime newDate = DateTime.Now;
+                        int compare = DateTime.Compare((DateTime)fieldValue, newDate);
+                        if (compare > 0)
+                        {
+                            return new ServiceResponse(false, new ErrorResult(
+                            AMISErrorCode.InvalidInput,
+                            Resource.DevMsg_ValidateFailed,
+                            Resource.UserMsg_ValidateFailed,
+                            fieldName,
+                            ""));
+                        }
+
+                    }
+
+                    if (fieldValue.GetType() == typeof(string))
+                    {
+                        var isFieldSqlInject = ValidateSqlInject((string)fieldValue);
+                        if(!isFieldSqlInject.Success)
+                        {
+                            return new ServiceResponse(false, new ErrorResult(
+                            AMISErrorCode.InvalidInput,
+                            Resource.DevMsg_ValidateFailed,
+                            Resource.UserMsg_ValidateFailed,
+                            fieldName,
+                            ""));
+                        }
+
+                    }
+                }
 
                 // validate property not null/empty
                 if (notEmptyAttribute != null)
@@ -305,8 +257,8 @@ namespace MISA.Web08.AMIS.BL
                 if (notDuplicateAttribute != null)
                 {
                     T findDuplicate = _baseDL.FindDuplicate(fieldName, fieldValue.ToString());
-                    if(findDuplicate != null && id != null &&
-                        (Guid) findDuplicate.GetType().GetProperty(primaryKeyFieldName).GetValue(findDuplicate, null) != id)
+                    if (findDuplicate != null && id != null &&
+                        (Guid)findDuplicate.GetType().GetProperty(primaryKeyFieldName).GetValue(findDuplicate, null) != id)
                     {
                         return new ServiceResponse(false, new ErrorResult(
                             AMISErrorCode.DuplicateInput,
@@ -316,7 +268,7 @@ namespace MISA.Web08.AMIS.BL
                             ""));
                     }
                 }
-                
+
                 // validate email
                 if (emailAddressAttribute != null)
                 {
@@ -340,11 +292,34 @@ namespace MISA.Web08.AMIS.BL
                                 ""));
                         }
                     }
-                                       
-                    
+
+
                 }
 
             }
+            return new ServiceResponse(true, null);
+        }
+
+        public ServiceResponse ValidateSqlInject(string str)
+        {
+            var regexItem = new Regex("^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0-9@., ]*$");
+            if(str != null)
+            {
+                if (regexItem.IsMatch(str))
+                {
+                    return new ServiceResponse(true, null);
+                }
+                else
+                {
+                    return new ServiceResponse(false, new ErrorResult(AMISErrorCode.InvalidInput,
+                                Resource.DevMsg_ValidateFailed,
+                                Resource.UserMsg_ValidateFailed,
+                                "",
+                                ""));
+
+                }
+            }
+            
             return new ServiceResponse(true, null);
         }
         #endregion

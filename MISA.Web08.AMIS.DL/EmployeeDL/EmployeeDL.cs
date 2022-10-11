@@ -18,6 +18,7 @@ namespace MISA.Web08.AMIS.DL
         {
         }
 
+        #region Method
         /// <summary>
         /// lấy thông tin nhân viên theo phân trang
         /// </summary>
@@ -26,13 +27,20 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="employeeFilter"></param>
         /// created: vinhkt(30/09/2022)
         /// <returns>danh sách nhân viên theo filter và phân trang</returns>
-        public Dictionary<string, object> GetEmployeesFilter(int v_Offset, int v_Limit, string v_Where)
+        public Dictionary<string, object> GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter)
         {
+            // tính offset, gán giá trị cho string v_where
+            int offset = pageSize * (pageNumber - 1);
+            string v_Where = "";
+            if (employeeFilter != null)
+            {
+                v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
+            }
             var storedProcedureName = Resource.Proc_employee_Filter;
 
             DynamicParameters values = new DynamicParameters();
-            values.Add("@v_Offset", v_Offset);
-            values.Add("@v_Limit", v_Limit);
+            values.Add("@v_Offset", offset);
+            values.Add("@v_Limit", pageSize);
             values.Add("@v_Where", v_Where);
 
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
@@ -45,7 +53,7 @@ namespace MISA.Web08.AMIS.DL
                     { "Total", count }
                 };
             }
-                
+
         }
 
         /// <summary>
@@ -65,7 +73,7 @@ namespace MISA.Web08.AMIS.DL
                 return maxEmployeeCode;
             }
 
-                
+
         }
 
         /// <summary>
@@ -80,9 +88,9 @@ namespace MISA.Web08.AMIS.DL
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
                 string idsQuery = "(";
-                for(int i = 0; i < guids.Count; i++)
+                for (int i = 0; i < guids.Count; i++)
                 {
-                    if(i == guids.Count - 1)
+                    if (i == guids.Count - 1)
                     {
                         idsQuery += $" '{guids[i]}')";
                     }
@@ -91,18 +99,35 @@ namespace MISA.Web08.AMIS.DL
                         idsQuery += $"'{guids[i]}', ";
                     }
                 }
+                _connection.Open();
+                var trans = _connection.BeginTransaction();
+
                 var storedProcedureName = String.Format(Resource.Proc_DeleteMultiple, typeof(Employee).Name); ;
                 DynamicParameters value = new DynamicParameters();
-                
+
                 value.Add("@v_IdsQuery", idsQuery);
-                affetecRows = _connection.Execute(
+                try
+                {
+                    affetecRows = _connection.Execute(
                                 storedProcedureName,
                                 value,
-                                commandType: System.Data.CommandType.StoredProcedure);
+                                commandType: System.Data.CommandType.StoredProcedure,
+                                transaction: trans);
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+
                 return affetecRows;
             }
 
-            
+
         }
 
         /// <summary>
@@ -110,8 +135,13 @@ namespace MISA.Web08.AMIS.DL
         /// </summary>
         /// created: vinhkt(30/09/2022)
         /// <returns>file excel cần download</returns>
-        public List<Employee> ExportAllEmployeesFilter(string v_Where)
+        public List<Employee> ExportAllEmployeesFilter(string employeeFilter)
         {
+            string v_Where = "";
+            if (employeeFilter != null)
+            {
+                v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
+            }
             string storedProcedureName = Resource.proc_employee_GetAllFilter;
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
@@ -125,5 +155,6 @@ namespace MISA.Web08.AMIS.DL
                 return records.ToList<Employee>();
             }
         }
+        #endregion
     }
 }

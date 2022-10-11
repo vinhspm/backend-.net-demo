@@ -6,6 +6,7 @@ namespace MISA.Web08.AMIS.Common.Entities
 {
     public class Employee : BaseEntity
     {
+        #region Field
         // id nhân viên
         [PrimaryKey]
         public Guid? EmployeeId { get; set; }
@@ -66,10 +67,18 @@ namespace MISA.Web08.AMIS.Common.Entities
         // tên ngân hàng
         [ShowInSheetAttribute]
         public string? BankName { get; set; }
-        
+
         // số điện thoại cố định
         public string? HomePhoneNumber { get; set; }
 
+        #endregion
+
+        #region Method
+
+        /// <summary>
+        /// hàm dịch các prop name thành tiếng việt
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<string, string> TranslatePropName()
         {
             return new Dictionary<string, string> {
@@ -85,8 +94,9 @@ namespace MISA.Web08.AMIS.Common.Entities
                 {"BankBranch", "Chi nhánh TK ngân hàng" },
                 {"BankName", "Tên ngân hàng" },
             };
-            
+
         }
+        #endregion
 
     }
 }

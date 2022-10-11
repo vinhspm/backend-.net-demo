@@ -1,4 +1,5 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
 using MISA.Web08.AMIS.Common.Enums;
@@ -49,28 +50,34 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         public PagingData GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter)
         {
-            // tính offset, gán giá trị cho string v_where
-            int offset = pageSize * (pageNumber - 1);
-            string v_Where = "";
-            if (employeeFilter != null)
+            ServiceResponse res = ValidateSqlInject(employeeFilter);
+            if(!res.Success)
             {
-                v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
+                return new PagingData(new List<Employee>(), 0, 0, 0, 0);
             }
-
-            // gọi đến dl để query vào db
-            var result = _employeeDL.GetEmployeesFilter(offset, pageSize, v_Where);
-
-            var totalRecord = result["Total"];
-            int isAdditionalLastPage = Convert.ToInt32(totalRecord) % Convert.ToInt32(pageSize);
-            if (isAdditionalLastPage > 0)
+            try
             {
-                isAdditionalLastPage = 1;
+
+                // gọi đến dl để query vào db
+                var result = _employeeDL.GetEmployeesFilter(pageSize, pageNumber, employeeFilter);
+
+                var totalRecord = result["Total"];
+                int isAdditionalLastPage = Convert.ToInt32(totalRecord) % Convert.ToInt32(pageSize);
+                if (isAdditionalLastPage > 0)
+                {
+                    isAdditionalLastPage = 1;
+                }
+                var totalPage = Convert.ToInt32(totalRecord) / Convert.ToInt32(pageSize) + isAdditionalLastPage;
+                var resultArr = (List<Employee>)result["PageData"];
+                var currentPageRecords = resultArr.Count;
+                return new PagingData(
+                    result["PageData"], Convert.ToInt32(totalRecord), totalPage, pageNumber, currentPageRecords);
             }
-            var totalPage = Convert.ToInt32(totalRecord) / Convert.ToInt32(pageSize) + isAdditionalLastPage;
-            var resultArr = (List<Employee>)result["PageData"];
-            var currentPageRecords = resultArr.Count;
-            return new PagingData(
-                result["PageData"], Convert.ToInt32(totalRecord), totalPage, pageNumber, currentPageRecords);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -80,14 +87,22 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>mã nhân viên mới</returns>
         public string GetNewEmployeeCode()
         {
-            string maxEmployeeCode = _employeeDL.GetMaxEmployeeCode();
-            int newEmployeeCodeNumber = Int32.Parse(maxEmployeeCode.Substring(2, maxEmployeeCode.Length - 2));
-            newEmployeeCodeNumber += 1;
-            string newEmployeeCodePrefix = Resource.New_EmployeeCode_Prefix;
-            string newEmployeeCode = newEmployeeCodePrefix + newEmployeeCodeNumber.ToString();
-            System.Diagnostics.Debug.WriteLine(newEmployeeCode);
+            try
+            {
+                string maxEmployeeCode = _employeeDL.GetMaxEmployeeCode();
+                int newEmployeeCodeNumber = Int32.Parse(maxEmployeeCode.Substring(2, maxEmployeeCode.Length - 2));
+                newEmployeeCodeNumber += 1;
+                string newEmployeeCodePrefix = Resource.New_EmployeeCode_Prefix;
+                string newEmployeeCode = newEmployeeCodePrefix + newEmployeeCodeNumber.ToString();
+                System.Diagnostics.Debug.WriteLine(newEmployeeCode);
 
-            return newEmployeeCode;
+                return newEmployeeCode;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw;
+            }
         }
 
         /// <summary>
@@ -111,23 +126,43 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>file excel cần download</returns>
         public MemoryStream ExportAllEmployeesFilter(string employeeFilter)
         {
-            string v_Where = "";
-            if (employeeFilter != null)
+            ServiceResponse res = ValidateSqlInject(employeeFilter);
+            if (!res.Success)
             {
-                v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
+                DataTable dtFake = new DataTable("Grid");
+                using (XLWorkbook wb = new XLWorkbook())
+                {
+                    var xlWorkSheet = wb.Worksheets.Add(dtFake);
+                    var widthProps = EmployeeSheetProperties.Width;
+                    foreach (KeyValuePair<string, int> entry in EmployeeSheetProperties.Width)
+                    {
+                        xlWorkSheet.Column(entry.Key).Width = entry.Value;
+                    }
+                    foreach (KeyValuePair<string, XLAlignmentHorizontalValues> entry in EmployeeSheetProperties.Align)
+                    {
+                        xlWorkSheet.Column(entry.Key).Style.Alignment.SetHorizontal(entry.Value);
+                    }
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        wb.SaveAs(stream);
+                        return stream;
+                    }
+                }
             }
-            List<Employee> employees = _employeeDL.ExportAllEmployeesFilter(v_Where);
+            List<Employee> employees = _employeeDL.ExportAllEmployeesFilter(employeeFilter);
             var departments = _departmentBL.GetAllRecords().ToList();
             var positions = _positionBL.GetAllRecords().ToList();
             DataTable dt = new DataTable("Grid");
-            Employee e = new Employee();
+
             // tạo header cho file excel
-            foreach (PropertyInfo prop in e.GetType().GetProperties())
+            foreach (PropertyInfo prop in typeof(Employee).GetProperties())
             {
                 var showInSheetAttribute = (ShowInSheetAttribute?)Attribute.GetCustomAttribute(prop, typeof(ShowInSheetAttribute));
                 if (showInSheetAttribute != null)
                 {
-                    dt.Columns.Add(new DataColumn(Employee.TranslatePropName()[prop.Name]));
+                    var column = new DataColumn(Employee.TranslatePropName()[prop.Name]);
+                    dt.Columns.Add(column);
                 }
             }
             // add data vào file excel
@@ -142,11 +177,13 @@ namespace MISA.Web08.AMIS.BL
 
                         var fieldName = prop.Name;
                         var fieldValue = prop.GetValue(emp);
-                        if(fieldValue != null)
+
+                        //format data các loại cho file excel
+                        if (fieldValue != null)
                         {
                             if (prop.Name == nameof(Employee.Gender))
                             {
-                                if(fieldValue.ToString() == (Gender.Male).ToString())
+                                if (fieldValue.ToString() == (Gender.Male).ToString())
                                 {
                                     fieldValue = Resource.Gender_Male_VN;
                                 }
@@ -163,26 +200,36 @@ namespace MISA.Web08.AMIS.BL
                             {
                                 fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("dd/MM/yyyy");
                             }
-                            else if (prop.Name == nameof(Department.DepartmentId) )
+                            else if (prop.Name == nameof(Department.DepartmentId))
                             {
                                 fieldValue = departments.Find(dpm => dpm.DepartmentId == emp.DepartmentId).DepartmentName;
                             }
-                            else if (prop.Name == nameof(Position.PositionId) )
+                            else if (prop.Name == nameof(Position.PositionId))
                             {
                                 fieldValue = positions.Find(pst => pst.PositionId == emp.PositionId).PositionName;
                             }
                         }
-                        
+
 
                         row[Employee.TranslatePropName()[prop.Name]] = fieldValue;
                     }
                 }
                 dt.Rows.Add(row);
-                
+
             }
             using (XLWorkbook wb = new XLWorkbook())
             {
-                wb.Worksheets.Add(dt);
+                var xlWorkSheet = wb.Worksheets.Add(dt);
+                var widthProps = EmployeeSheetProperties.Width;
+                foreach (KeyValuePair<string, int> entry in EmployeeSheetProperties.Width)
+                {
+                    xlWorkSheet.Column(entry.Key).Width = entry.Value;
+                }
+                foreach (KeyValuePair<string, XLAlignmentHorizontalValues> entry in EmployeeSheetProperties.Align)
+                {
+                    xlWorkSheet.Column(entry.Key).Style.Alignment.SetHorizontal(entry.Value);
+                }
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     wb.SaveAs(stream);

@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
+using MISA.Web08.AMIS.Common.Enums;
 using MISA.Web08.AMIS.Common.Resources;
 using MySqlConnector;
 using System;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,7 +45,7 @@ namespace MISA.Web08.AMIS.DL
         /// created by: vinhkt(30/09/2022)
         public T GetRecordById(Guid id)
         {
-            
+
             var storedProcedureName = String.Format(Resource.Proc_Detail, typeof(T).Name); ;
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
@@ -60,12 +62,62 @@ namespace MISA.Web08.AMIS.DL
         /// <summary>
         /// thêm mới 1 bản ghi
         /// </summary>
-        /// <param name="v_Columns"></param>
-        /// <param name="v_Values"></param>
+        /// <param name="record"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public QueryResult InsertRecord(string v_Columns, string v_Values)
+        public ServiceResponse InsertRecord(T record)
         {
+            var v_Columns = "";
+            var v_Values = "";
+            Guid recordId = Guid.NewGuid();
+            foreach (PropertyInfo prop in record.GetType().GetProperties())
+            {
+                var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
+
+                // gán giá trị cho id của bản ghi
+                if (primaryKeyAttribute != null)
+                {
+                    prop.SetValue(record, recordId, null);
+                }
+                var fieldName = prop.Name;
+                var fieldValue = prop.GetValue(record);
+                if (fieldValue != null)
+                {
+                    // định dạng chuẩn cho datetime
+                    if (fieldValue.GetType() == typeof(DateTime))
+                    {
+                        fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
+                    }
+                    // gán giá trị cho giới tính từ enum
+                    if (fieldValue.GetType() == typeof(Gender))
+                    {
+                        fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
+                    }
+                    // gán giá trị v_Columns truyền vào procedure
+                    if (v_Columns.Length > 0)
+                    {
+                        v_Columns = v_Columns + ", " + fieldName;
+                    }
+                    else
+                    {
+                        v_Columns = v_Columns + fieldName;
+                    }
+
+                    // gán giá trị v_Values truyền vào procedure
+                    if (v_Values.Length > 0)
+                    {
+                        v_Values = v_Values + ", " + $"'{fieldValue}'";
+                    }
+                    else
+                    {
+                        v_Values = v_Values + $"'{fieldValue}'";
+                    }
+
+                }
+
+            }
+            v_Columns = $"({v_Columns})";
+            v_Values = $"({v_Values})";
             DynamicParameters values = new DynamicParameters();
             values.Add("@v_Columns", v_Columns);
             values.Add("@v_Values", v_Values);
@@ -88,17 +140,17 @@ namespace MISA.Web08.AMIS.DL
                 finally
                 {
                     _connection.Close();
-                }  
-              
+                }
+
             }
 
             if (affetecRows > 0)
             {
-                return QueryResult.Success;
+                return new ServiceResponse(true, recordId);
             }
             else
             {
-                return QueryResult.Fail;
+                return new ServiceResponse(false, Guid.Empty);
             }
 
 
@@ -111,20 +163,73 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="v_Query"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public QueryResult UpdateRecord(Guid id, string v_Query)
+        public QueryResult UpdateRecord(Guid id, T record)
         {
-            
+            var v_Query = "";
+            Guid recordId = id;
+            foreach (PropertyInfo prop in record.GetType().GetProperties())
+            {
+                var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
+                // gán giá trị cho id của record từ route truyền vào
+                if (primaryKeyAttribute != null)
+                {
+                    prop.SetValue(record, recordId, null);
+                }
+
+                var fieldName = prop.Name;
+                var fieldValue = prop.GetValue(record);
+                if (fieldValue != null)
+                {
+                    //format ngày tháng để truyền vào db
+                    if (fieldValue.GetType() == typeof(DateTime))
+                    {
+                        fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
+                    }
+                    //lấy giá trị của gender dựa trên enum
+                    if (fieldValue.GetType() == typeof(Gender))
+                    {
+                        fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
+                    }
+                    var fieldUpdateString = fieldName + " = " + $"\"{fieldValue}\"";
+                    if (v_Query.Length > 0)
+                    {
+                        v_Query += ", " + fieldUpdateString;
+                    }
+                    else
+                    {
+                        v_Query += fieldUpdateString;
+                    }
+
+                }
+
+            }
             var affetecRows = 0;
 
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
+                _connection.Open();
+                var trans = _connection.BeginTransaction();
                 var v_Id = $"'{id}'";
                 DynamicParameters values = new DynamicParameters();
                 values.Add("@v_Id", v_Id);
                 values.Add("@v_Query", v_Query);
                 var storedProcedureName = String.Format(Resource.Proc_Update, typeof(T).Name);
+                try
+                {
+                    affetecRows = _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure, transaction: trans);
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    _connection.Close();
+                }
 
-                affetecRows = _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure);
+
+
 
             }
             if (affetecRows > 0)
@@ -145,17 +250,32 @@ namespace MISA.Web08.AMIS.DL
         /// created by: vinhkt(30/09/2022)
         public QueryResult DeleteRecord(Guid v_id)
         {
-            
+
             int affetecRows = 0;
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
+                _connection.Open();
+                var trans = _connection.BeginTransaction();
                 var storedProcedureName = String.Format(Resource.Proc_Delete, typeof(T).Name); ;
                 DynamicParameters value = new DynamicParameters();
                 value.Add("@v_Id", v_id);
-                affetecRows = _connection.Execute(
+                try
+                {
+                    affetecRows = _connection.Execute(
                                 storedProcedureName,
                                 value,
-                                commandType: System.Data.CommandType.StoredProcedure);
+                                commandType: System.Data.CommandType.StoredProcedure, transaction: trans);
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+
             }
 
             if (affetecRows > 0)

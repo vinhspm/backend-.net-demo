@@ -9,6 +9,8 @@ namespace MISA.Web08.AMIS.Common
 {
     public class BaseEntity
     {
+        #region Field
+
         // ngày tạo
         public DateTime? CreatedDate { get; set; } = DateTime.Now;
 
@@ -20,5 +22,7 @@ namespace MISA.Web08.AMIS.Common
 
         //người chỉnh sửa gần nhất
         public string ModifiedBy { get; set; } = Resource.DefaultUser;
+
+        #endregion
     }
 }

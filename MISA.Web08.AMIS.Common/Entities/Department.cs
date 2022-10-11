@@ -8,6 +8,7 @@ namespace MISA.Web08.AMIS.Common
 {
     public class Department : BaseEntity
     {
+        #region Field
         // id phòng ban
         [PrimaryKey]
         public Guid? DepartmentId { get; set; }
@@ -19,6 +20,8 @@ namespace MISA.Web08.AMIS.Common
         // tên phòng ban
         [NotEmpty]
         public string? DepartmentName { get; set; }
+
+        #endregion
 
 
     }

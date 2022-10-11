@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.BL
 {
-    public interface IEmployeeBL: IBaseBL<Employee>
+    public interface IEmployeeBL : IBaseBL<Employee>
     {
+        #region Method
         /// <summary>
         /// lấy thông tin nhân viên theo phân trang
         /// </summary>
@@ -42,5 +43,7 @@ namespace MISA.Web08.AMIS.BL
         /// created: vinhkt(30/09/2022)
         /// <returns>file excel cần download</returns>
         public MemoryStream ExportAllEmployeesFilter(string employeeFilter);
+
+        #endregion
     }
 }

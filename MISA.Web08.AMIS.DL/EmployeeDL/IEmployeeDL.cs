@@ -10,6 +10,8 @@ namespace MISA.Web08.AMIS.DL
     public interface IEmployeeDL : IBaseDL<Employee>
     {
 
+        #region Method
+
         /// <summary>
         /// lấy thông tin nhân viên theo phân trang
         /// </summary>
@@ -18,7 +20,7 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="employeeFilter"></param>
         /// created: vinhkt(30/09/2022)
         /// <returns>danh sách nhân viên theo filter và phân trang</returns>
-        public Dictionary<string,object> GetEmployeesFilter(int v_Offset, int v_Limit, string v_Where);
+        public Dictionary<string, object> GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter);
 
         /// <summary>
         /// lấy mã nhân viên lớn nhất
@@ -40,6 +42,8 @@ namespace MISA.Web08.AMIS.DL
         /// </summary>
         /// created: vinhkt(30/09/2022)
         /// <returns>file excel cần download</returns>
-        public List<Employee> ExportAllEmployeesFilter(string v_Where);
+        public List<Employee> ExportAllEmployeesFilter(string employeeFilter);
+
+        #endregion
     }
 }

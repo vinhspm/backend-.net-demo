@@ -10,6 +10,7 @@ namespace MISA.Web08.AMIS.DL
 {
     public interface IBaseDL<T>
     {
+        #region Method
         /// <summary>
         /// lấy danh sách toàn bộ bản ghi trong 1 bảng
         /// </summary>
@@ -20,11 +21,10 @@ namespace MISA.Web08.AMIS.DL
         /// <summary>
         /// thêm mới 1 bản ghi
         /// </summary>
-        /// <param name="v_Columns"></param>
-        /// <param name="v_Values"></param>
+        /// <param name="record"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public QueryResult InsertRecord(string v_Columns, string v_Values);
+        public ServiceResponse InsertRecord(T record);
 
         /// <summary>
         /// thêm mới 1 bản ghi
@@ -33,7 +33,7 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="v_Query"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public QueryResult UpdateRecord(Guid v_id, string v_Query);
+        public QueryResult UpdateRecord(Guid v_id, T record);
 
         /// <summary>
         /// xoá 1 bản ghi
@@ -58,5 +58,6 @@ namespace MISA.Web08.AMIS.DL
         /// <returns>boolean</returns>
         /// created by: vinhkt(30/09/2022)
         public T FindDuplicate(string fieldName, string fieldValue);
+        #endregion
     }
 }
