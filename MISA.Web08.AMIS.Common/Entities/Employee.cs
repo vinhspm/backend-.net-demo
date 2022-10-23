@@ -60,13 +60,13 @@ namespace MISA.Web08.AMIS.Common.Entities
         [ShowInSheetAttribute]
         public string? BankAccount { get; set; }
 
-        // chi nhánh ngân hàng
-        [ShowInSheetAttribute]
-        public string? BankBranch { get; set; }
-
         // tên ngân hàng
         [ShowInSheetAttribute]
         public string? BankName { get; set; }
+
+        // chi nhánh ngân hàng
+        [ShowInSheetAttribute]
+        public string? BankBranch { get; set; }
 
         // số điện thoại cố định
         public string? HomePhoneNumber { get; set; }

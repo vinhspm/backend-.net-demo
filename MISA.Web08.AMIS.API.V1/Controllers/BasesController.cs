@@ -72,15 +72,23 @@ namespace MISA.Web08.AMIS.API.Controllers
                     return StatusCode(StatusCodes.Status201Created, result.Data);
 
                 }
-                else
+                else if(result.Data != null && result.Data.GetType() == typeof(ErrorResult))
                 {
-                    var ErrorData = (ErrorResult) result.Data;
+                    var errorData = (ErrorResult) result.Data;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResult(
-                       ErrorData.Code,
+                       errorData.Code,
                        Resource.DevMsg_ValidateFailed,
                        Resource.UserMsg_ValidateFailed,
-                       ErrorData.MoreInfo,
+                       errorData.MoreInfo,
                        HttpContext.TraceIdentifier));
+                } else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                        AMISErrorCode.Exception,
+                        Resource.DevMsg_InsertFailed,
+                        Resource.UserMsg_InsertFailed,
+                        "",
+                        HttpContext.TraceIdentifier));
                 }
             }
             catch (Exception ex)
@@ -113,7 +121,7 @@ namespace MISA.Web08.AMIS.API.Controllers
                 {
                     return StatusCode(StatusCodes.Status200OK, result.Data);
                 }
-                else
+                else if(result.Data != null && result.Data.GetType() == typeof(ErrorResult))
                 {
                     var ErrorData = (ErrorResult)result.Data;
                     return StatusCode(StatusCodes.Status400BadRequest, new ErrorResult(
@@ -122,6 +130,15 @@ namespace MISA.Web08.AMIS.API.Controllers
                        Resource.UserMsg_ValidateFailed,
                        ErrorData.MoreInfo,
                        HttpContext.TraceIdentifier));
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                        AMISErrorCode.Exception,
+                        Resource.DevMsg_UpdateFailed,
+                        Resource.UserMsg_UpdateFailed,
+                        "",
+                        HttpContext.TraceIdentifier));
                 }
             }
             catch (Exception ex)
@@ -153,7 +170,7 @@ namespace MISA.Web08.AMIS.API.Controllers
                 {
                     return StatusCode(StatusCodes.Status200OK, result.Data);
                 }
-                else
+                else if (result.Data != null)
                 {
                     var error = new ErrorResult(
                        AMISErrorCode.InvalidInput,
@@ -163,6 +180,15 @@ namespace MISA.Web08.AMIS.API.Controllers
                        HttpContext.TraceIdentifier);
                         
                     return StatusCode(StatusCodes.Status400BadRequest, error);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                        AMISErrorCode.Exception,
+                        Resource.DevMsg_DeleteFailed,
+                        Resource.UserMsg_DeleteFailed,
+                        "",
+                        HttpContext.TraceIdentifier));
                 }
             }
             catch (Exception ex)
@@ -194,7 +220,7 @@ namespace MISA.Web08.AMIS.API.Controllers
                 {
                     return StatusCode(StatusCodes.Status200OK, result.Data);
                 }
-                else
+                else if(result.Data != null)
                 {
                     var error = new ErrorResult(
                        AMISErrorCode.InvalidInput,
@@ -204,6 +230,15 @@ namespace MISA.Web08.AMIS.API.Controllers
                        HttpContext.TraceIdentifier);
 
                     return StatusCode(StatusCodes.Status400BadRequest, error);
+                }
+                else
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                        AMISErrorCode.Exception,
+                        Resource.DevMsg_CannotFind,
+                        Resource.UserMsg_CannotFind,
+                        "",
+                        HttpContext.TraceIdentifier));
                 }
             }
             catch (Exception ex)

@@ -250,6 +250,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Proc_request_Filter.
+        /// </summary>
+        public static string Proc_request_Filter {
+            get {
+                return ResourceManager.GetString("Proc_request_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Proc_{0}_Update.
         /// </summary>
         public static string Proc_Update {

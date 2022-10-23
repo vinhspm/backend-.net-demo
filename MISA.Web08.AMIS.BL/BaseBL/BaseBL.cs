@@ -152,7 +152,6 @@ namespace MISA.Web08.AMIS.BL
             {
                 try
                 {
-
                     var res = _baseDL.UpdateRecord(id, record);
                     if (res == QueryResult.Success)
                     {
@@ -212,21 +211,6 @@ namespace MISA.Web08.AMIS.BL
                         DateTime newDate = DateTime.Now;
                         int compare = DateTime.Compare((DateTime)fieldValue, newDate);
                         if (compare > 0)
-                        {
-                            return new ServiceResponse(false, new ErrorResult(
-                            AMISErrorCode.InvalidInput,
-                            Resource.DevMsg_ValidateFailed,
-                            Resource.UserMsg_ValidateFailed,
-                            fieldName,
-                            ""));
-                        }
-
-                    }
-
-                    if (fieldValue.GetType() == typeof(string))
-                    {
-                        var isFieldSqlInject = ValidateSqlInject((string)fieldValue);
-                        if(!isFieldSqlInject.Success)
                         {
                             return new ServiceResponse(false, new ErrorResult(
                             AMISErrorCode.InvalidInput,
@@ -300,28 +284,6 @@ namespace MISA.Web08.AMIS.BL
             return new ServiceResponse(true, null);
         }
 
-        public ServiceResponse ValidateSqlInject(string str)
-        {
-            var regexItem = new Regex("^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ0-9@., ]*$");
-            if(str != null)
-            {
-                if (regexItem.IsMatch(str))
-                {
-                    return new ServiceResponse(true, null);
-                }
-                else
-                {
-                    return new ServiceResponse(false, new ErrorResult(AMISErrorCode.InvalidInput,
-                                Resource.DevMsg_ValidateFailed,
-                                Resource.UserMsg_ValidateFailed,
-                                "",
-                                ""));
-
-                }
-            }
-            
-            return new ServiceResponse(true, null);
-        }
         #endregion
     }
 

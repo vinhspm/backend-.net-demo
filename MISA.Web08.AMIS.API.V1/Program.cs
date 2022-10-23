@@ -20,6 +20,8 @@ builder.Services.AddScoped<IDepartmentBL, DepartmentBL>();
 builder.Services.AddScoped<IDepartmentDL, DepartmentDL>();
 builder.Services.AddScoped<IPositionBL, PositionBL>();
 builder.Services.AddScoped<IPositionDL, PositionDL>();
+builder.Services.AddScoped<IRequestBL, RequestBL>();
+builder.Services.AddScoped<IRequestDL, RequestDL>();
 
 
 
@@ -32,14 +34,19 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-                      policy =>
-                      {
-                          policy.WithOrigins("http://localhost:8080")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
-                      });
-
-    
+                  policy =>
+                  {
+                      policy.WithOrigins("http://localhost:8080")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+                  });
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                  policy =>
+                  {
+                      policy.WithOrigins("http://localhost:5173")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+                  });
 });
 
 

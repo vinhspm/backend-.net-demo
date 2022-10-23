@@ -201,6 +201,10 @@
     <value>proc_{0}_Insert</value>
     <comment>template string cho procedure insert 1 bản ghi vào bảng</comment>
   </data>
+  <data name="Proc_request_Filter" xml:space="preserve">
+    <value>Proc_request_Filter</value>
+    <comment>template string cho procedure lấy request trong bảng theo phân trang</comment>
+  </data>
   <data name="Proc_Update" xml:space="preserve">
     <value>Proc_{0}_Update</value>
     <comment>template string cho procedure insert 1 bản ghi vào bảng nhân viên</comment>

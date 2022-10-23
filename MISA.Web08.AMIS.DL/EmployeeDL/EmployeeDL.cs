@@ -34,7 +34,7 @@ namespace MISA.Web08.AMIS.DL
             string v_Where = "";
             if (employeeFilter != null)
             {
-                v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\"";
+                v_Where = $"EmployeeCode LIKE \"%{employeeFilter}%\" OR FullName LIKE \"%{employeeFilter}%\" OR PhoneNumber LIKE \"%{employeeFilter}%\"";
             }
             var storedProcedureName = Resource.Proc_employee_Filter;
 

@@ -50,17 +50,12 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         public PagingData GetEmployeesFilter(int pageSize, int pageNumber, string employeeFilter)
         {
-            ServiceResponse res = ValidateSqlInject(employeeFilter);
-            if(!res.Success)
-            {
-                return new PagingData(new List<Employee>(), 0, 0, 0, 0);
-            }
             try
             {
 
                 // gọi đến dl để query vào db
                 var result = _employeeDL.GetEmployeesFilter(pageSize, pageNumber, employeeFilter);
-
+                Console.WriteLine(result);
                 var totalRecord = result["Total"];
                 int isAdditionalLastPage = Convert.ToInt32(totalRecord) % Convert.ToInt32(pageSize);
                 if (isAdditionalLastPage > 0)
@@ -126,30 +121,6 @@ namespace MISA.Web08.AMIS.BL
         /// <returns>file excel cần download</returns>
         public MemoryStream ExportAllEmployeesFilter(string employeeFilter)
         {
-            ServiceResponse res = ValidateSqlInject(employeeFilter);
-            if (!res.Success)
-            {
-                DataTable dtFake = new DataTable("Grid");
-                using (XLWorkbook wb = new XLWorkbook())
-                {
-                    var xlWorkSheet = wb.Worksheets.Add(dtFake);
-                    var widthProps = EmployeeSheetProperties.Width;
-                    foreach (KeyValuePair<string, int> entry in EmployeeSheetProperties.Width)
-                    {
-                        xlWorkSheet.Column(entry.Key).Width = entry.Value;
-                    }
-                    foreach (KeyValuePair<string, XLAlignmentHorizontalValues> entry in EmployeeSheetProperties.Align)
-                    {
-                        xlWorkSheet.Column(entry.Key).Style.Alignment.SetHorizontal(entry.Value);
-                    }
-
-                    using (MemoryStream stream = new MemoryStream())
-                    {
-                        wb.SaveAs(stream);
-                        return stream;
-                    }
-                }
-            }
             List<Employee> employees = _employeeDL.ExportAllEmployeesFilter(employeeFilter);
             var departments = _departmentBL.GetAllRecords().ToList();
             var positions = _positionBL.GetAllRecords().ToList();
