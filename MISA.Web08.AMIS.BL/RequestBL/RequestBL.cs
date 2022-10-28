@@ -1,9 +1,14 @@
-﻿using MISA.Web08.AMIS.Common;
+﻿using ClosedXML.Excel;
+using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
+using MISA.Web08.AMIS.Common.Enums;
+using MISA.Web08.AMIS.Common.Resources;
 using MISA.Web08.AMIS.DL;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,49 +36,104 @@ namespace MISA.Web08.AMIS.BL
         }
 
         #endregion
-        public MemoryStream ExportAllEmployeesFilter(string requestFilter)
+        public MemoryStream ExportAllRequestsFilter(string? requestFilter, RequestStatus status, Guid? departmentId)
         {
-            throw new NotImplementedException();
+            var result = _requestDL.GetRequestsFilter(100000, 1, requestFilter, status, departmentId);
+            List<Request> requests = (List<Request>)result["PageData"];
+            var departments = _departmentBL.GetAllRecords().ToList();
+            var positions = _positionBL.GetAllRecords().ToList();
+            DataTable dt = new DataTable("Grid");
+
+            // tạo header cho file excel
+            foreach (PropertyInfo prop in typeof(Request).GetProperties())
+            {
+                var showInSheetAttribute = (ShowInSheetAttribute?)Attribute.GetCustomAttribute(prop, typeof(ShowInSheetAttribute));
+                if (showInSheetAttribute != null)
+                {
+                    var column = new DataColumn(Request.TranslatePropName()[prop.Name]);
+                    dt.Columns.Add(column);
+                }
+            }
+            // add data vào file excel
+            foreach (var emp in requests)
+            {
+                DataRow row = dt.NewRow();
+                foreach (PropertyInfo prop in emp.GetType().GetProperties())
+                {
+                    var showInSheetAttribute = (ShowInSheetAttribute?)Attribute.GetCustomAttribute(prop, typeof(ShowInSheetAttribute));
+                    if (showInSheetAttribute != null)
+                    {
+
+                        var fieldName = prop.Name;
+                        var fieldValue = prop.GetValue(emp);
+
+                        //format data các loại cho file excel
+                        if (fieldValue != null)
+                        {
+                            if (prop.Name == nameof(Request.Status))
+                            {
+                                if (fieldValue.ToString() == (RequestStatus.Approved).ToString())
+                                {
+                                    fieldValue = Resource.Status_Approve_VN;
+                                }
+                                if (fieldValue.ToString() == (RequestStatus.Waiting).ToString())
+                                {
+                                    fieldValue = Resource.Status_Waiting_VN;
+                                }
+                                if (fieldValue.ToString() == (RequestStatus.Denined).ToString())
+                                {
+                                    fieldValue = Resource.Status_Denined_VN;
+                                }
+
+                            }
+                            else if (fieldValue.GetType() == typeof(DateTime))
+                            {
+                                fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("dd/MM/yyyy HH:mm");
+                            }
+                            else if (prop.Name == nameof(Department.DepartmentId))
+                            {
+                                fieldValue = departments.Find(dpm => dpm.DepartmentId == emp.DepartmentId).DepartmentName;
+                            }
+                            else if (prop.Name == nameof(Position.PositionId))
+                            {
+                                fieldValue = positions.Find(pst => pst.PositionId == emp.PositionId).PositionName;
+                            }
+                        }
+
+
+                        row[Request.TranslatePropName()[prop.Name]] = fieldValue;
+                    }
+                }
+                dt.Rows.Add(row);
+
+            }
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                var xlWorkSheet = wb.Worksheets.Add(dt);
+                var widthProps = RequestSheetProperties.Width;
+                foreach (KeyValuePair<string, int> entry in RequestSheetProperties.Width)
+                {
+                    xlWorkSheet.Column(entry.Key).Width = entry.Value;
+                }
+                foreach (KeyValuePair<string, XLAlignmentHorizontalValues> entry in RequestSheetProperties.Align)
+                {
+                    xlWorkSheet.Column(entry.Key).Style.Alignment.SetHorizontal(entry.Value);
+                }
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return stream;
+                }
+            }
         }
 
-        public PagingData GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus)
+        public PagingData GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus, Guid? departmentId)
         {
             try
             {
-                string employeeIdArray = "";
-                //lấy danh sách nhân viên phù hợp với filter
-                if (requestFilter != null)
-                {
-                    //List<Employee> employees = _employeeDL.ExportAllEmployeesFilter(requestFilter);
-
-                    //// thêm id các nhân viên tìm được vào mảng để tìm trong db
-                    //if(employees.Count > 0)
-                    //{
-                    //    Employee lastEmployee = employees.Last();
-                    //    foreach (Employee employee in employees)
-                    //    {
-                    //        if (employee.Equals(lastEmployee))
-                    //        {
-                    //            employeeIdArray += $"'{employee.EmployeeId}'";
-                    //        }
-                    //        else
-                    //        {
-                    //            employeeIdArray += $"'{employee.EmployeeId}', ";
-
-                    //        }
-
-                    //    }
-                    //} else
-                    //{
-                    //    return new PagingData(
-                    //new List<Request>(), 0, 0, 0, 0);
-                    //}
-
-                }
-
-
                 // gọi đến dl để query vào db
-                var result = _requestDL.GetRequestsFilter(pageSize, pageNumber, requestFilter, requestStatus);
+                var result = _requestDL.GetRequestsFilter(pageSize, pageNumber, requestFilter, requestStatus, departmentId);
                 Console.WriteLine(result);
                 var totalRecord = result["Total"];
                 int isAdditionalLastPage = Convert.ToInt32(totalRecord) % Convert.ToInt32(pageSize);
@@ -96,7 +156,23 @@ namespace MISA.Web08.AMIS.BL
 
         public ServiceResponse MultipleDelete(List<Guid> guids)
         {
-            throw new NotImplementedException();
+            int affectedRecords = _requestDL.MultipleDelete(guids);
+
+            return new ServiceResponse(true, new MultipleQueriesResult(affectedRecords, guids.Count - affectedRecords));
+        }
+
+        public ServiceResponse MultipleApprove(List<Guid> guids)
+        {
+            int affectedRecords = _requestDL.MultipleChangeStatus(guids, RequestStatus.Approved);
+
+            return new ServiceResponse(true, new MultipleQueriesResult(affectedRecords, guids.Count - affectedRecords));
+        }
+
+        public ServiceResponse MultipleDenine(List<Guid> guids)
+        {
+            int affectedRecords = _requestDL.MultipleChangeStatus(guids, RequestStatus.Denined);
+
+            return new ServiceResponse(true, new MultipleQueriesResult(affectedRecords, guids.Count - affectedRecords));
         }
     }
 }

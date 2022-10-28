@@ -12,10 +12,10 @@ namespace MISA.Web08.AMIS.Common
         Approved = 1,
 
         //từ chối
-        Denined = 2,
+        Waiting = 2,
 
         // chờ duyệt
-        Waiting = 3,
+        Denined = 3,
 
         // tất cả
         All = -1

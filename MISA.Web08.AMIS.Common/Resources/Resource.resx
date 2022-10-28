@@ -121,6 +121,10 @@
     <value>Admin</value>
     <comment>tên người dùng mặc định</comment>
   </data>
+  <data name="DevMsg_ApproveFailed" xml:space="preserve">
+    <value>Insert to Database return 0</value>
+    <comment>Message cho dev đọc khi duyệt bản ghi vào db thất bại</comment>
+  </data>
   <data name="DevMsg_CannotFind" xml:space="preserve">
     <value>Could not find record with given id</value>
     <comment>Message cho dev đọc khi không tìm thấy bản ghi</comment>
@@ -128,6 +132,10 @@
   <data name="DevMsg_DeleteFailed" xml:space="preserve">
     <value>Delete to database return 0</value>
     <comment>Message cho dev đọc khi delete bản ghi vào db thất bại</comment>
+  </data>
+  <data name="DevMsg_DenineFailed" xml:space="preserve">
+    <value>Insert to Database return 0</value>
+    <comment>Message cho dev đọc khi từ chối bản ghi vào db thất bại</comment>
   </data>
   <data name="DevMsg_Exception" xml:space="preserve">
     <value>Catched an exception</value>
@@ -160,6 +168,10 @@
   <data name="New_EmployeeCode_Prefix" xml:space="preserve">
     <value>NV</value>
     <comment>prefix của mã nhân viên</comment>
+  </data>
+  <data name="Proc_ChangeStatusMultiple" xml:space="preserve">
+    <value>proc_{0}_ChangeStatusMultiple</value>
+    <comment>template string cho procedure sửa trạng thái nhiều bản ghi trong 1 bảng</comment>
   </data>
   <data name="Proc_Delete" xml:space="preserve">
     <value>proc_{0}_Delete</value>
@@ -209,6 +221,19 @@
     <value>Proc_{0}_Update</value>
     <comment>template string cho procedure insert 1 bản ghi vào bảng nhân viên</comment>
   </data>
+  <data name="Status_Approve_VN" xml:space="preserve">
+    <value>Đã duyệt</value>
+  </data>
+  <data name="Status_Denined_VN" xml:space="preserve">
+    <value>Từ chối</value>
+  </data>
+  <data name="Status_Waiting_VN" xml:space="preserve">
+    <value>Chờ duyệt</value>
+  </data>
+  <data name="UserMsg_ApproveFailed" xml:space="preserve">
+    <value>Duyệt thất bại</value>
+    <comment>Message cho user đọc khi duyệt bản ghi vào db thất bại</comment>
+  </data>
   <data name="UserMsg_CannotFind" xml:space="preserve">
     <value>Không tìm thấy bản ghi</value>
     <comment>Message cho user đọc khi không tìm thấy bản ghi</comment>
@@ -216,6 +241,10 @@
   <data name="UserMsg_DeleteFailed" xml:space="preserve">
     <value>Xoá thất bại</value>
     <comment>Message cho user đọc khi xoá bản ghi vào db thất bại</comment>
+  </data>
+  <data name="UserMsg_DenineFailed" xml:space="preserve">
+    <value>Từ chối thất bại</value>
+    <comment>Message cho user đọc khi từ chối bản ghi vào db thất bại</comment>
   </data>
   <data name="UserMsg_Exception" xml:space="preserve">
     <value>Có lỗi xảy ra! Vui lòng liên hệ với MISA</value>

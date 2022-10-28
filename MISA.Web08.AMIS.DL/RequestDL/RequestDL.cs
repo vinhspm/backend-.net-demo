@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
+using MISA.Web08.AMIS.Common.Enums;
 using MISA.Web08.AMIS.Common.Resources;
 using MySqlConnector;
 using System;
@@ -18,7 +19,7 @@ namespace MISA.Web08.AMIS.DL
             throw new NotImplementedException();
         }
 
-        public Dictionary<string, object> GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus)
+        public Dictionary<string, object> GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus, Guid? departmentId)
         {
             // tính offset, gán giá trị cho string v_where
             int offset = pageSize * (pageNumber - 1);
@@ -27,17 +28,49 @@ namespace MISA.Web08.AMIS.DL
             {
                 if (requestFilter != "" && requestFilter != null)
                 {
-                    v_Where = $"e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\"";
+                    if(departmentId == null)
+                    {
+                        v_Where = $"e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\"";
+                    } else
+                    {
+                        v_Where = $"(e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\") AND e.DepartmentId=\"{departmentId}\"";
+                    }
+                    
+                } else
+                {
+                    if (departmentId == null)
+                    {
+                        v_Where = null;
+                    }
+                    else
+                    {
+                        v_Where = $"e.DepartmentId=\"{departmentId}\"";
+                    }
                 }
             }
             else if(requestStatus != null)
             {
                 if (requestFilter != "")
                 {
-                    v_Where = $"(e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\") AND Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())}";
+                    if(departmentId != null)
+                    {
+                        v_Where = $"(e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\") AND Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())} AND e.DepartmentId=\"{departmentId}\"";
+                    }
+                    else
+                    {
+                        v_Where = $"(e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\") AND Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())}";
+                    }
                 } else
                 {
-                    v_Where = $"Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())}";
+                    if(departmentId == null)
+                    {
+                        v_Where = $"Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())}";
+                    }
+                    else
+                    {
+                        v_Where = $"Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())} AND e.DepartmentId=\"{departmentId}\"";
+
+                    }
                 }
                 
 
@@ -65,7 +98,95 @@ namespace MISA.Web08.AMIS.DL
 
         public int MultipleDelete(List<Guid> guids)
         {
-            throw new NotImplementedException();
+            int affetecRows = 0;
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                string idsQuery = "(";
+                for (int i = 0; i < guids.Count; i++)
+                {
+                    if (i == guids.Count - 1)
+                    {
+                        idsQuery += $" '{guids[i]}')";
+                    }
+                    else
+                    {
+                        idsQuery += $"'{guids[i]}', ";
+                    }
+                }
+                _connection.Open();
+                var trans = _connection.BeginTransaction();
+
+                var storedProcedureName = String.Format(Resource.Proc_DeleteMultiple, typeof(Request).Name); ;
+                DynamicParameters value = new DynamicParameters();
+
+                value.Add("@v_IdsQuery", idsQuery);
+                try
+                {
+                    affetecRows = _connection.Execute(
+                                storedProcedureName,
+                                value,
+                                commandType: System.Data.CommandType.StoredProcedure,
+                                transaction: trans);
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+
+                return affetecRows;
+            }
+        }
+
+        public int MultipleChangeStatus(List<Guid> guids, RequestStatus status)
+        {
+            int affetecRows = 0;
+            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            {
+                string idsQuery = "(";
+                for (int i = 0; i < guids.Count; i++)
+                {
+                    if (i == guids.Count - 1)
+                    {
+                        idsQuery += $" '{guids[i]}')";
+                    }
+                    else
+                    {
+                        idsQuery += $"'{guids[i]}', ";
+                    }
+                }
+                _connection.Open();
+                var trans = _connection.BeginTransaction();
+
+                var storedProcedureName = String.Format(Resource.Proc_ChangeStatusMultiple, typeof(Request).Name); ;
+                DynamicParameters value = new DynamicParameters();
+
+                value.Add("@v_IdsQuery", idsQuery);
+                value.Add("@v_Status", (int)Enum.Parse(typeof(RequestStatus), status.ToString()));
+                try
+                {
+                    affetecRows = _connection.Execute(
+                                storedProcedureName,
+                                value,
+                                commandType: System.Data.CommandType.StoredProcedure,
+                                transaction: trans);
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    _connection.Close();
+                }
+
+                return affetecRows;
+            }
         }
     }
 }

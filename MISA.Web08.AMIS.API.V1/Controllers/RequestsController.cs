@@ -36,11 +36,11 @@ namespace MISA.Web08.AMIS.API.Controllers
         /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         [HttpGet]
         [Route("filter")]
-        public IActionResult GetRequestsFilter([FromQuery] int pageSize, [FromQuery] int pageNumber, [FromQuery] string? requestFilter, [FromQuery] RequestStatus status)
+        public IActionResult GetRequestsFilter([FromQuery] int pageSize, [FromQuery] int pageNumber, [FromQuery] string? requestFilter, [FromQuery] RequestStatus status, [FromQuery] Guid? departmentId)
         {
             try
             {
-                PagingData pagingData = _requestBL.GetRequestsFilter(pageSize, pageNumber, requestFilter, status);
+                PagingData pagingData = _requestBL.GetRequestsFilter(pageSize, pageNumber, requestFilter, status, departmentId);
 
                 return StatusCode(StatusCodes.Status200OK, pagingData);
             }
@@ -80,19 +80,73 @@ namespace MISA.Web08.AMIS.API.Controllers
         }
 
         /// <summary>
-        /// xuất file excel các nhân viên theo filter
+        /// duyệt nhiều yêu cầu trong bảng
+        /// </summary>
+        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
+        [HttpPut("multiple-approve")]
+        public IActionResult MultipleApprove([FromBody] List<Guid> guids)
+        {
+            try
+            {
+                var result = _requestBL.MultipleApprove(guids);
+                return StatusCode(StatusCodes.Status200OK, result.Data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                        AMISErrorCode.Exception,
+                        Resource.DevMsg_ApproveFailed,
+                        Resource.UserMsg_ApproveFailed,
+                        ex.Message,
+                        HttpContext.TraceIdentifier));
+
+            }
+        }
+
+        /// <summary>
+        /// từ chối nhiều yêu cầu trong bảng
+        /// </summary>
+        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
+        [HttpPut("multiple-denine")]
+        public IActionResult MultipleDenine([FromBody] List<Guid> guids)
+        {
+            try
+            {
+                var result = _requestBL.MultipleDenine(guids);
+                return StatusCode(StatusCodes.Status200OK, result.Data);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                        AMISErrorCode.Exception,
+                        Resource.DevMsg_DenineFailed,
+                        Resource.UserMsg_DenineFailed,
+                        ex.Message,
+                        HttpContext.TraceIdentifier));
+
+            }
+        }
+
+        /// <summary>
+        /// xuất file excel các request theo filter
         /// </summary>
         /// created: vinhkt(30/09/2022)
         /// <returns>file excel cần download</returns>
         [HttpGet]
-        [Route("ExportAllEmployeesFilter")]
-        public IActionResult ExportAllEmployeesFilter([FromQuery] string? employeeFilter)
+        [Route("ExportAllRequestsFilter")]
+        public IActionResult ExportAllRequestsFilter([FromQuery] string? requestFilter, [FromQuery] RequestStatus status, [FromQuery] Guid? departmentId)
         {
             try
             {
-                MemoryStream employeesSheetStream = _requestBL.ExportAllEmployeesFilter(employeeFilter);
+                MemoryStream requestSheetStream = _requestBL.ExportAllRequestsFilter(requestFilter, status, departmentId);
 
-                return File(employeesSheetStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Danh sách nhân viên.xlsx");
+                return File(requestSheetStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Danh sách yêu cầu.xlsx");
             }
             catch (Exception ex)
             {
@@ -101,6 +155,7 @@ namespace MISA.Web08.AMIS.API.Controllers
 
             }
         }
+
         #endregion
     }
 }

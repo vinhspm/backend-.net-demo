@@ -20,15 +20,23 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="requestFilter"></param>
         /// created: vinhkt(30/09/2022)
         /// <returns>danh sách nhân viên theo filter và phân trang</returns>
-        public Dictionary<string, object> GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus);
+        public Dictionary<string, object> GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus, Guid? departmentId);
 
         /// <summary>
-        /// xoá nhiều nhân viên trong bảng
+        /// xoá nhiều yêu cầu trong bảng
         /// </summary>
-        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
+        /// <param name="ids">mảng các id của các yêu cầu cần xoá</param>
         /// created by vinhkt(30/09/2022)
         /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public int MultipleDelete(List<Guid> guids);
+
+        /// <summary>
+        /// duyệt, từ chối nhiều yêu cầu trong bảng
+        /// </summary>
+        /// <param name="ids">mảng các id của các yêu cầu cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
+        public int MultipleChangeStatus(List<Guid> guids, RequestStatus status);
 
         /// <summary>
         /// xuất file excel các nhân viên theo filter

@@ -110,7 +110,7 @@ namespace MISA.Web08.AMIS.BL
         {
             int affectedRecords = _employeeDL.MultipleDelete(guids);
 
-            return new ServiceResponse(true, new MultipleDeleteResult(affectedRecords, guids.Count - affectedRecords));
+            return new ServiceResponse(true, new MultipleQueriesResult(affectedRecords, guids.Count - affectedRecords));
 
         }
 

@@ -70,6 +70,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Insert to Database return 0.
+        /// </summary>
+        public static string DevMsg_ApproveFailed {
+            get {
+                return ResourceManager.GetString("DevMsg_ApproveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not find record with given id.
         /// </summary>
         public static string DevMsg_CannotFind {
@@ -84,6 +93,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         public static string DevMsg_DeleteFailed {
             get {
                 return ResourceManager.GetString("DevMsg_DeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Insert to Database return 0.
+        /// </summary>
+        public static string DevMsg_DenineFailed {
+            get {
+                return ResourceManager.GetString("DevMsg_DenineFailed", resourceCulture);
             }
         }
         
@@ -156,6 +174,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         public static string New_EmployeeCode_Prefix {
             get {
                 return ResourceManager.GetString("New_EmployeeCode_Prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to proc_{0}_ChangeStatusMultiple.
+        /// </summary>
+        public static string Proc_ChangeStatusMultiple {
+            get {
+                return ResourceManager.GetString("Proc_ChangeStatusMultiple", resourceCulture);
             }
         }
         
@@ -268,6 +295,42 @@ namespace MISA.Web08.AMIS.Common.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Đã duyệt.
+        /// </summary>
+        public static string Status_Approve_VN {
+            get {
+                return ResourceManager.GetString("Status_Approve_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Từ chối.
+        /// </summary>
+        public static string Status_Denined_VN {
+            get {
+                return ResourceManager.GetString("Status_Denined_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chờ duyệt.
+        /// </summary>
+        public static string Status_Waiting_VN {
+            get {
+                return ResourceManager.GetString("Status_Waiting_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Duyệt thất bại.
+        /// </summary>
+        public static string UserMsg_ApproveFailed {
+            get {
+                return ResourceManager.GetString("UserMsg_ApproveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không tìm thấy bản ghi.
         /// </summary>
         public static string UserMsg_CannotFind {
@@ -282,6 +345,15 @@ namespace MISA.Web08.AMIS.Common.Resources {
         public static string UserMsg_DeleteFailed {
             get {
                 return ResourceManager.GetString("UserMsg_DeleteFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Từ chối thất bại.
+        /// </summary>
+        public static string UserMsg_DenineFailed {
+            get {
+                return ResourceManager.GetString("UserMsg_DenineFailed", resourceCulture);
             }
         }
         

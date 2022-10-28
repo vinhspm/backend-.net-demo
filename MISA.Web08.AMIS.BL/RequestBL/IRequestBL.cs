@@ -12,29 +12,45 @@ namespace MISA.Web08.AMIS.BL
     {
         #region Method
         /// <summary>
-        /// lấy thông tin nhân viên theo phân trang
+        /// lấy thông tin yêu cầu theo phân trang
         /// </summary>
         /// <param name="pageSize"></param>
         /// <param name="pageNumber"></param>
         /// <param name="requestFilter"></param>
         /// created: vinhkt(30/09/2022)
-        /// <returns>danh sách nhân viên theo filter và phân trang</returns>
-        public PagingData GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus);
+        /// <returns>danh sách yêu cầu theo filter và phân trang</returns>
+        public PagingData GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus, Guid? departmentId);
 
         /// <summary>
-        /// xoá nhiều nhân viên trong bảng
+        /// xoá nhiều yêu cầu trong bảng
         /// </summary>
-        /// <param name="ids">mảng các id của các nhân viên cần xoá</param>
+        /// <param name="ids">mảng các id của các yêu cầu cần xoá</param>
         /// created by vinhkt(30/09/2022)
         /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public ServiceResponse MultipleDelete(List<Guid> guids);
 
         /// <summary>
-        /// xuất file excel các nhân viên theo filter
+        /// duyệt nhiều yêu cầu trong bảng
+        /// </summary>
+        /// <param name="ids">mảng các id của các yêu cầu cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
+        public ServiceResponse MultipleApprove(List<Guid> guids);
+
+        /// <summary>
+        /// từ chối nhiều yêu cầu trong bảng
+        /// </summary>
+        /// <param name="ids">mảng các id của các yêu cầu cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
+        public ServiceResponse MultipleDenine(List<Guid> guids);
+
+        /// <summary>
+        /// xuất file excel các yêu cầu theo filter
         /// </summary>
         /// created: vinhkt(30/09/2022)
         /// <returns>file excel cần download</returns>
-        public MemoryStream ExportAllEmployeesFilter(string requestFilter);
+        public MemoryStream ExportAllRequestsFilter(string? requestFilter, RequestStatus status, Guid? departmentId);
 
         #endregion
     }

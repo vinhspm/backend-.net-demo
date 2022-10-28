@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MISA.Web08.AMIS.Common
 {
-    public class MultipleDeleteResult
+    public class MultipleQueriesResult
     {
         // số bản ghi thành công
         public int SuccessQueries { get; set; }
@@ -14,7 +14,7 @@ namespace MISA.Web08.AMIS.Common
         // số bản ghi thất bại
         public int FailedQueries { get; set; }
 
-        public MultipleDeleteResult(int successQueries, int failedQueries)
+        public MultipleQueriesResult(int successQueries, int failedQueries)
         {
             SuccessQueries = successQueries;
             FailedQueries = failedQueries;

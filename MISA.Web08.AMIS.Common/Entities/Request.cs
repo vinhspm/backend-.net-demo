@@ -19,30 +19,31 @@ namespace MISA.Web08.AMIS.Common.Entities
         public Guid? EmployeeId { get; set; }
 
         // mã nhân viên
+        [ShowInSheetAttribute]
         public string? EmployeeCode { get; set; }
 
         // tên nhân viên
+        [ShowInSheetAttribute]
         public string? FullName { get; set; }
 
         //id đơn vị
+        [ShowInSheetAttribute]
         public Guid? DepartmentId { get; set; }
 
         //id vị trí
+        [ShowInSheetAttribute]
         public Guid? PositionId { get; set; }
 
-        // id người duyệt
-        public Guid? ApprovalToId { get; set; }
-
-        // tên người duyệt
-        public string? ApprovalToName { get; set; }
-
-        // trạng thái đơn
-        public RequestStatus? Status { get; set; }
+        // ngày nộp đơn
+        [ShowInSheetAttribute]
+        public DateTime? ApplyDate { get; set; }
 
         // làm thêm từ
+        [ShowInSheetAttribute]
         public DateTime? FromDate { get; set; }
 
         // làm thêm đến
+        [ShowInSheetAttribute]
         public DateTime? ToDate { get; set; }
 
         // nghỉ giữa ca từ
@@ -51,14 +52,24 @@ namespace MISA.Web08.AMIS.Common.Entities
         // nghỉ giữa ca đến
         public DateTime? BreakTimeTo { get; set; }
 
-        // ngày nộp đơn
-        public DateTime? ApplyDate { get; set; }
+        // thời điểm làm thêm
+        [ShowInSheetAttribute]
+        public WorkTime? OverTimeInWorkingShift { get; set; }
 
         //lý do làm thêm
+        [ShowInSheetAttribute]
         public string? Reason { get; set; }
 
-        // thời điểm làm thêm
-        public WorkTime? OverTimeInWorkingShift { get; set; }
+        // id người duyệt
+        public Guid? ApprovalToId { get; set; }
+
+        // tên người duyệt
+        [ShowInSheetAttribute]
+        public string? ApprovalToName { get; set; }
+
+        // trạng thái đơn
+        [ShowInSheetAttribute]
+        public RequestStatus? Status { get; set; }
 
         #endregion
 
@@ -68,23 +79,26 @@ namespace MISA.Web08.AMIS.Common.Entities
         /// hàm dịch các prop name thành tiếng việt
         /// </summary>
         /// <returns></returns>
-        //public static Dictionary<string, string> TranslatePropName()
-        //{
-        //    return new Dictionary<string, string> {
-        //        {"EmployeeCode", "Mã nhân viên" },
-        //        {"FullName", "Tên nhân viên" },
-        //        {"Gender", "Giới tính" },
-        //        {"DateOfBirth", "Ngày sinh" },
-        //        {"IdentityNumber", "Số CMND" },
-        //        {"IdentityDate", "Ngày cấp CMND" },
-        //        {"DepartmentId", "Đơn vị" },
-        //        {"PositionId", "Vị trí" },
-        //        {"BankAccount", "Số tài khoản" },
-        //        {"BankBranch", "Chi nhánh TK ngân hàng" },
-        //        {"BankName", "Tên ngân hàng" },
-        //    };
+        public static Dictionary<string, string> TranslatePropName()
+        {
+            return new Dictionary<string, string> {
+                {"EmployeeCode", "Mã nhân viên" },
+                {"FullName", "Tên nhân viên" },
+                {"DepartmentId", "Đơn vị" },
+                {"PositionId", "Vị trí" },
+                {"ApplyDate", "Ngày nộp đơn" },
+                {"FromDate", "Làm thêm từ"},
+                {"ToDate", "Làm thêm đến"},
+                {"OverTimeInWorkingShift", "Thời điểm làm thêm"},
+                {"", "Ca làm thêm"},
+                {"Reason", "Lý do làm thêm"},
+                {"ApprovalToName", "Người duyệt"},
+                {"Note", "Ghi chú"},
+                {"Status", "Trạng thái"},
 
-        //}
+            };
+
+        }
         #endregion
 
     }
