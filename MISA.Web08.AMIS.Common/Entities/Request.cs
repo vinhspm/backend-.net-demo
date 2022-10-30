@@ -75,6 +75,8 @@ namespace MISA.Web08.AMIS.Common.Entities
         [ShowInSheetAttribute]
         public RequestStatus? Status { get; set; }
 
+        public List<RequestDetail> Employees { get; set; }
+
         #endregion
 
         #region Method
