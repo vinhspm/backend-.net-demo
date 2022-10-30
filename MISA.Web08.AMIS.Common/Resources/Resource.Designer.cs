@@ -392,5 +392,50 @@ namespace MISA.Web08.AMIS.Common.Resources {
                 return ResourceManager.GetString("UserMsg_ValidateFailed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ca chấm 1 lần.
+        /// </summary>
+        public static string WorkShift_OneTimeShift_VN {
+            get {
+                return ResourceManager.GetString("WorkShift_OneTimeShift_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sau ca.
+        /// </summary>
+        public static string WorkTime_AfterShift_VN {
+            get {
+                return ResourceManager.GetString("WorkTime_AfterShift_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trước ca.
+        /// </summary>
+        public static string WorkTime_BeforeShift_VN {
+            get {
+                return ResourceManager.GetString("WorkTime_BeforeShift_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nghỉ giữa ca.
+        /// </summary>
+        public static string WorkTime_ShiftBreak_VN {
+            get {
+                return ResourceManager.GetString("WorkTime_ShiftBreak_VN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ngày nghỉ.
+        /// </summary>
+        public static string WorkTime_WorkOffDay_VN {
+            get {
+                return ResourceManager.GetString("WorkTime_WorkOffDay_VN", resourceCulture);
+            }
+        }
     }
 }

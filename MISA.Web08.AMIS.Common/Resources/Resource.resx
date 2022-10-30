@@ -262,4 +262,24 @@
     <value>Dữ liệu đầu vào không hợp lệ</value>
     <comment>Message cho user đọc khi validate dữ liệu đầu vào thất bại</comment>
   </data>
+  <data name="WorkShift_OneTimeShift_VN" xml:space="preserve">
+    <value>Ca chấm 1 lần</value>
+    <comment>text tiếng việt cho trường ca chấm 1 lần</comment>
+  </data>
+  <data name="WorkTime_AfterShift_VN" xml:space="preserve">
+    <value>Sau ca</value>
+    <comment>text tiếng việt cho trường thời điểm sau ca</comment>
+  </data>
+  <data name="WorkTime_BeforeShift_VN" xml:space="preserve">
+    <value>Trước ca</value>
+    <comment>text tiếng việt cho trường thời điểm trước ca</comment>
+  </data>
+  <data name="WorkTime_ShiftBreak_VN" xml:space="preserve">
+    <value>Nghỉ giữa ca</value>
+    <comment>text tiếng việt cho trường thời điểm giữa ca</comment>
+  </data>
+  <data name="WorkTime_WorkOffDay_VN" xml:space="preserve">
+    <value>Ngày nghỉ</value>
+    <comment>text tiếng việt cho trường thời điểm ngày nghỉ</comment>
+  </data>
 </root>

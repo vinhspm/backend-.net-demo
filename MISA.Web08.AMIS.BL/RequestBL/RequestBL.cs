@@ -98,6 +98,14 @@ namespace MISA.Web08.AMIS.BL
                             {
                                 fieldValue = positions.Find(pst => pst.PositionId == emp.PositionId).PositionName;
                             }
+                            else if(prop.Name == nameof(Request.OverTimeInWorkingShift))
+                            {
+                                fieldValue = Request.TranslateOverTimeShiftValue((WorkTime)fieldValue);
+                            }
+                            else if (prop.Name == nameof(Request.WorkingShift))
+                            {
+                                fieldValue = Request.TranslateWorkShiftValue((WorkShifts)fieldValue);
+                            }
                         }
 
 

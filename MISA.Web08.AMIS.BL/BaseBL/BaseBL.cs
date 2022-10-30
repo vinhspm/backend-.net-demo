@@ -202,27 +202,6 @@ namespace MISA.Web08.AMIS.BL
                 var fieldName = prop.Name;
                 var fieldValue = prop.GetValue(record);
 
-                //validate ngày tháng không được quá ngày hiện tại
-
-                if (fieldValue != null)
-                {
-                    if (fieldValue.GetType() == typeof(DateTime))
-                    {
-                        DateTime newDate = DateTime.Now;
-                        int compare = DateTime.Compare((DateTime)fieldValue, newDate);
-                        if (compare > 0)
-                        {
-                            return new ServiceResponse(false, new ErrorResult(
-                            AMISErrorCode.InvalidInput,
-                            Resource.DevMsg_ValidateFailed,
-                            Resource.UserMsg_ValidateFailed,
-                            fieldName,
-                            ""));
-                        }
-
-                    }
-                }
-
                 // validate property not null/empty
                 if (notEmptyAttribute != null)
                 {

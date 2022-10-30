@@ -107,6 +107,11 @@ namespace MISA.Web08.AMIS.DL
                     {
                         fieldValue = (int)Enum.Parse(typeof(WorkTime), fieldValue.ToString());
                     }
+                    // gán giá trị cho ca làm việc từ enum
+                    if (fieldValue.GetType() == typeof(WorkShifts))
+                    {
+                        fieldValue = (int)Enum.Parse(typeof(WorkShifts), fieldValue.ToString());
+                    }
                     // gán giá trị v_Columns truyền vào procedure
                     if (v_Columns.Length > 0)
                     {

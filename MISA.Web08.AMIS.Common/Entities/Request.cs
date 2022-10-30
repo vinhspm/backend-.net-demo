@@ -1,4 +1,5 @@
 ﻿using MISA.Web08.AMIS.Common.Enums;
+using MISA.Web08.AMIS.Common.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,6 +57,9 @@ namespace MISA.Web08.AMIS.Common.Entities
         [ShowInSheetAttribute]
         public WorkTime? OverTimeInWorkingShift { get; set; }
 
+        [ShowInSheet]
+        public WorkShifts? WorkingShift { get; set; }
+
         //lý do làm thêm
         [ShowInSheetAttribute]
         public string? Reason { get; set; }
@@ -90,7 +94,7 @@ namespace MISA.Web08.AMIS.Common.Entities
                 {"FromDate", "Làm thêm từ"},
                 {"ToDate", "Làm thêm đến"},
                 {"OverTimeInWorkingShift", "Thời điểm làm thêm"},
-                {"", "Ca làm thêm"},
+                {"WorkingShift", "Ca làm thêm"},
                 {"Reason", "Lý do làm thêm"},
                 {"ApprovalToName", "Người duyệt"},
                 {"Note", "Ghi chú"},
@@ -99,6 +103,36 @@ namespace MISA.Web08.AMIS.Common.Entities
             };
 
         }
+
+        public static string TranslateOverTimeShiftValue(WorkTime workTime )
+        {
+            if(workTime.ToString() == (WorkTime.AfterShift).ToString())
+            {
+                return Resource.WorkTime_AfterShift_VN;
+            }
+            else if(workTime.ToString() == (WorkTime.BeforeShift).ToString())
+            {
+                return Resource.WorkTime_BeforeShift_VN;
+            }
+            else if(workTime.ToString() == (WorkTime.ShiftBreak).ToString())
+            {
+                return Resource.WorkTime_ShiftBreak_VN;
+            } else if(workTime.ToString() == (WorkTime.WorkOffDay).ToString())
+            {
+                return Resource.WorkTime_WorkOffDay_VN; ;
+            }
+            return null;
+        }
+
+        public static string TranslateWorkShiftValue(WorkShifts workShift)
+        {
+            if (workShift.ToString() == WorkShifts.OneTimeShift.ToString())
+            {
+                return Resource.WorkShift_OneTimeShift_VN;
+            }
+            return null;
+        }
+
         #endregion
 
     }
