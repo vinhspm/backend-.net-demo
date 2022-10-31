@@ -57,4 +57,12 @@ namespace MISA.Web08.AMIS.Common
 
     }
 
+    /// <summary>
+    /// đánh dấu property là không phải cột
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class NotColumnAttribute : Attribute
+    {
+
+    }
 }

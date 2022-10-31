@@ -61,9 +61,16 @@ namespace MISA.Web08.AMIS.BL
             }
             else
             {
+                GetDetailData(record);
                 return new ServiceResponse(true, record);
             }
         }
+
+        /// <summary>
+        /// hàm lấy thôgn tin detail
+        /// </summary>
+        /// <param name="record"></param>
+        public virtual void GetDetailData(T record) { }
 
         /// <summary>
         /// xoá một bản ghi trong bảng
@@ -114,6 +121,7 @@ namespace MISA.Web08.AMIS.BL
                     var res = _baseDL.InsertRecord(record);
                     if (res.Success)
                     {
+                        InsertDetailData(record,(Guid) res.Data);
                         return new ServiceResponse(true, res.Data);
                     }
                     else
@@ -135,6 +143,13 @@ namespace MISA.Web08.AMIS.BL
 
         }
 
+        /// <summary>
+        /// hàm thêm thông tin vào bảng detail
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="recordId"></param>
+        public virtual void InsertDetailData(T record, Guid recordId) { }
+
 
         /// <summary>
         /// sửa một bản ghi trong bảng
@@ -155,6 +170,7 @@ namespace MISA.Web08.AMIS.BL
                     var res = _baseDL.UpdateRecord(id, record);
                     if (res == QueryResult.Success)
                     {
+                        InsertDetailData(record, id);
                         return new ServiceResponse(true, res);
                     }
                     else

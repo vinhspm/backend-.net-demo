@@ -21,18 +21,19 @@ namespace MISA.Web08.AMIS.BL
         private IEmployeeDL _employeeDL;
         private IDepartmentBL _departmentBL;
         private IPositionDL _positionBL;
-
+        private IRequestDetailBL _requestDetailBL;
 
         #endregion
 
         #region Constructor
 
-        public RequestBL(IRequestDL requestDL, IEmployeeDL employeeDL, IDepartmentBL departmentBL, IPositionDL positionBL) : base(requestDL)
+        public RequestBL(IRequestDL requestDL, IEmployeeDL employeeDL, IDepartmentBL departmentBL, IPositionDL positionBL, IRequestDetailBL requestDetailBL) : base(requestDL)
         {
             _requestDL = requestDL;
             _employeeDL = employeeDL;
             _departmentBL = departmentBL;
             _positionBL = positionBL;
+            _requestDetailBL = requestDetailBL;
         }
 
         #endregion
@@ -136,6 +137,26 @@ namespace MISA.Web08.AMIS.BL
             }
         }
 
+        /// <summary>
+        /// hàm thêm thông tin vào bảng detail
+        /// </summary>
+        /// <param name="record"></param>
+        /// <param name="recordId"></param>
+        public override void InsertDetailData(Request record, Guid requestId) {
+            var employees = record.Employees;
+            _requestDetailBL.DeleteRecordByOverTimeId(requestId);
+            foreach(RequestDetail employee in employees)
+            {
+                employee.RequestId = requestId;
+                _requestDetailBL.InsertRecord(employee);
+            }
+        }
+
+        public override void GetDetailData(Request request)
+        {
+            var employees = _requestDetailBL.GetAllRecordById((Guid) request.OverTimeId);
+            request.Employees =(List<RequestDetail>) employees;
+        }
         public PagingData GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus, Guid? departmentId)
         {
             try

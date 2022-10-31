@@ -22,6 +22,8 @@ builder.Services.AddScoped<IPositionBL, PositionBL>();
 builder.Services.AddScoped<IPositionDL, PositionDL>();
 builder.Services.AddScoped<IRequestBL, RequestBL>();
 builder.Services.AddScoped<IRequestDL, RequestDL>();
+builder.Services.AddScoped<IRequestDetailBL, RequestDetailBL>();
+builder.Services.AddScoped<IRequestDetailDL, RequestDetailDL>();
 
 
 

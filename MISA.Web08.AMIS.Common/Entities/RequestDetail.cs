@@ -13,13 +13,15 @@ namespace MISA.Web08.AMIS.Common.Entities
 
         public Guid? RequestId { get; set; } 
 
+        public Guid EmployeeId { get; set; }
+
         public string? EmployeeCode { get; set; }
 
         public string? FullName { get; set; }
 
-        public string? PositionName { get; set; }
+        public Guid? PositionId { get; set; }
 
-        public string? DepartmentName { get; set; }
+        public Guid? DepartmentId { get; set; }
 
         public string? PhoneNumber { get; set; }
 

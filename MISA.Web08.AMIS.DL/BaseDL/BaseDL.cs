@@ -73,11 +73,15 @@ namespace MISA.Web08.AMIS.DL
             foreach (PropertyInfo prop in record.GetType().GetProperties())
             {
                 var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
-
+                var isColumnAttribute = (NotColumnAttribute?)Attribute.GetCustomAttribute(prop, typeof(NotColumnAttribute));
                 // gán giá trị cho id của bản ghi
                 if (primaryKeyAttribute != null)
                 {
                     prop.SetValue(record, recordId, null);
+                }
+                if(isColumnAttribute != null)
+                {
+                    continue;
                 }
                 var fieldName = prop.Name;
                 var fieldValue = prop.GetValue(record);
@@ -189,12 +193,17 @@ namespace MISA.Web08.AMIS.DL
             foreach (PropertyInfo prop in record.GetType().GetProperties())
             {
                 var primaryKeyAttribute = (PrimaryKey?)Attribute.GetCustomAttribute(prop, typeof(PrimaryKey));
+                var isColumnAttribute = (NotColumnAttribute?)Attribute.GetCustomAttribute(prop, typeof(NotColumnAttribute));
+
                 // gán giá trị cho id của record từ route truyền vào
                 if (primaryKeyAttribute != null)
                 {
                     prop.SetValue(record, recordId, null);
                 }
-
+                if (isColumnAttribute != null)
+                {
+                    continue;
+                }
                 var fieldName = prop.Name;
                 var fieldValue = prop.GetValue(record);
                 if (fieldValue != null)
