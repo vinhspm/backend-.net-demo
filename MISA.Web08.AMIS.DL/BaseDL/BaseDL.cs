@@ -87,35 +87,7 @@ namespace MISA.Web08.AMIS.DL
                 var fieldValue = prop.GetValue(record);
                 if (fieldValue != null)
                 {
-                    // định dạng chuẩn cho datetime
-                    if (fieldValue.GetType() == typeof(DateTime))
-                    {
-                        if (fieldName == "ModifiedDate")
-                        {
-                            fieldValue = DateTime.Now;
-                        }
-                        fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
-                    }
-                    // gán giá trị cho giới tính từ enum
-                    if (fieldValue.GetType() == typeof(Gender))
-                    {
-                        fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
-                    }
-                    // gán giá trị cho trạng thái từ enum
-                    if (fieldValue.GetType() == typeof(RequestStatus))
-                    {
-                        fieldValue = (int)Enum.Parse(typeof(RequestStatus), fieldValue.ToString());
-                    }
-                    // gán giá trị cho thời gian làm việc từ enum
-                    if (fieldValue.GetType() == typeof(WorkTime))
-                    {
-                        fieldValue = (int)Enum.Parse(typeof(WorkTime), fieldValue.ToString());
-                    }
-                    // gán giá trị cho ca làm việc từ enum
-                    if (fieldValue.GetType() == typeof(WorkShifts))
-                    {
-                        fieldValue = (int)Enum.Parse(typeof(WorkShifts), fieldValue.ToString());
-                    }
+                    fieldValue = FormatFieldValue(fieldValue, fieldName);
                     // gán giá trị v_Columns truyền vào procedure
                     if (v_Columns.Length > 0)
                     {
@@ -208,30 +180,7 @@ namespace MISA.Web08.AMIS.DL
                 var fieldValue = prop.GetValue(record);
                 if (fieldValue != null)
                 {
-                    //format ngày tháng để truyền vào db
-                    if (fieldValue.GetType() == typeof(DateTime))
-                    {
-                        if(fieldName == "ModifiedDate")
-                        {
-                            fieldValue = DateTime.Now;
-                        }
-                        fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
-                    }
-                    //lấy giá trị của gender dựa trên enum
-                    if (fieldValue.GetType() == typeof(Gender))
-                    {
-                        fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
-                    }
-                    // gán giá trị cho trạng thái từ enum
-                    if (fieldValue.GetType() == typeof(RequestStatus))
-                    {
-                        fieldValue = (int)Enum.Parse(typeof(RequestStatus), fieldValue.ToString());
-                    }
-                    // gán giá trị cho thời gian làm việc từ enum
-                    if (fieldValue.GetType() == typeof(WorkTime))
-                    {
-                        fieldValue = (int)Enum.Parse(typeof(WorkTime), fieldValue.ToString());
-                    }
+                    fieldValue = FormatFieldValue(fieldValue, fieldName);
                     var fieldUpdateString = fieldName + " = " + $"\"{fieldValue}\"";
                     if (v_Query.Length > 0)
                     {
@@ -353,6 +302,40 @@ namespace MISA.Web08.AMIS.DL
                 return duplicateRecord;
             }
 
+        }
+
+        public string FormatFieldValue(object fieldValue, object fieldName)
+        {
+            //format ngày tháng để truyền vào db
+            if (fieldValue.GetType() == typeof(DateTime))
+            {
+                if (fieldName == "ModifiedDate")
+                {
+                    fieldValue = DateTime.Now;
+                }
+                fieldValue = DateTime.Parse(fieldValue.ToString()).ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            //lấy giá trị của gender dựa trên enum
+            if (fieldValue.GetType() == typeof(Gender))
+            {
+                fieldValue = (int)Enum.Parse(typeof(Gender), fieldValue.ToString());
+            }
+            // gán giá trị cho trạng thái từ enum
+            if (fieldValue.GetType() == typeof(RequestStatus))
+            {
+                fieldValue = (int)Enum.Parse(typeof(RequestStatus), fieldValue.ToString());
+            }
+            // gán giá trị cho thời gian làm việc từ enum
+            if (fieldValue.GetType() == typeof(WorkTime))
+            {
+                fieldValue = (int)Enum.Parse(typeof(WorkTime), fieldValue.ToString());
+            }
+            // gán giá trị cho thời gian làm việc từ enum
+            if (fieldValue.GetType() == typeof(WorkShifts))
+            {
+                fieldValue = (int)Enum.Parse(typeof(WorkShifts), fieldValue.ToString());
+            }
+            return fieldValue.ToString();
         }
         #endregion
     }

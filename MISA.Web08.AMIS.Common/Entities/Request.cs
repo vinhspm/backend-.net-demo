@@ -24,16 +24,23 @@ namespace MISA.Web08.AMIS.Common.Entities
         public string? EmployeeCode { get; set; }
 
         // tên nhân viên
-        [ShowInSheetAttribute]
+        [ShowInSheetAttribute, NotColumn]
         public string? FullName { get; set; }
 
         //id đơn vị
         [ShowInSheetAttribute]
         public Guid? DepartmentId { get; set; }
 
+        // tên đơn vị
+        [NotColumn]
+        public string? DepartmentName { get; set; }
+
         //id vị trí
         [ShowInSheetAttribute]
         public Guid? PositionId { get; set; }
+
+        [NotColumn]
+        public string? PositionName { get; set; }
 
         // ngày nộp đơn
         [ShowInSheetAttribute]
