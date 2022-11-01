@@ -38,13 +38,6 @@ namespace MISA.Web08.AMIS.DL
         /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public int MultipleChangeStatus(List<Guid> guids, RequestStatus status);
 
-        /// <summary>
-        /// xuất file excel các nhân viên theo filter
-        /// </summary>
-        /// created: vinhkt(30/09/2022)
-        /// <returns>file excel cần download</returns>
-        public List<Employee> ExportAllRequestsFilter(string requestFilter);
-
         #endregion
     }
 }

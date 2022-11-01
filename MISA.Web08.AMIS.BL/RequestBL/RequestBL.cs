@@ -37,6 +37,14 @@ namespace MISA.Web08.AMIS.BL
         }
 
         #endregion
+
+        /// <summary>
+        /// xuất file excel cho tất cả request thoả mãn filter
+        /// </summary>
+        /// <param name="requestFilter"></param>
+        /// <param name="status"></param>
+        /// <param name="departmentId"></param>
+        /// <returns></returns>
         public MemoryStream ExportAllRequestsFilter(string? requestFilter, RequestStatus status, Guid? departmentId)
         {
             var result = _requestDL.GetRequestsFilter(100000, 1, requestFilter, status, departmentId);
@@ -152,11 +160,25 @@ namespace MISA.Web08.AMIS.BL
             }
         }
 
+        /// <summary>
+        /// lấy tất cả detail của bảng request
+        /// </summary>
+        /// <param name="request"></param>
         public override void GetDetailData(Request request)
         {
             var employees = _requestDetailBL.GetAllRecordById((Guid) request.OverTimeId);
             request.Employees =(List<RequestDetail>) employees;
         }
+
+        /// <summary>
+        /// lấy dữ liệu request theo filter
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="requestFilter"></param>
+        /// <param name="requestStatus"></param>
+        /// <param name="departmentId"></param>
+        /// <returns></returns>
         public PagingData GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus, Guid? departmentId)
         {
             try
@@ -183,6 +205,11 @@ namespace MISA.Web08.AMIS.BL
             }
         }
 
+        /// <summary>
+        /// xoá nhiều request
+        /// </summary>
+        /// <param name="guids"></param>
+        /// <returns></returns>
         public ServiceResponse MultipleDelete(List<Guid> guids)
         {
             int affectedRecords = _requestDL.MultipleDelete(guids);
@@ -190,6 +217,11 @@ namespace MISA.Web08.AMIS.BL
             return new ServiceResponse(true, new MultipleQueriesResult(affectedRecords, guids.Count - affectedRecords));
         }
 
+        /// <summary>
+        /// chấp thuận nhiều request
+        /// </summary>
+        /// <param name="guids"></param>
+        /// <returns></returns>
         public ServiceResponse MultipleApprove(List<Guid> guids)
         {
             int affectedRecords = _requestDL.MultipleChangeStatus(guids, RequestStatus.Approved);
@@ -197,6 +229,11 @@ namespace MISA.Web08.AMIS.BL
             return new ServiceResponse(true, new MultipleQueriesResult(affectedRecords, guids.Count - affectedRecords));
         }
 
+        /// <summary>
+        /// từ chối nhiều request
+        /// </summary>
+        /// <param name="guids"></param>
+        /// <returns></returns>
         public ServiceResponse MultipleDenine(List<Guid> guids)
         {
             int affectedRecords = _requestDL.MultipleChangeStatus(guids, RequestStatus.Denined);

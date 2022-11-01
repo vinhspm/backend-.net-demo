@@ -9,8 +9,22 @@ namespace MISA.Web08.AMIS.BL
 {
     public interface IRequestDetailBL : IBaseBL<RequestDetail>
     {
+        #region Method
+
+        /// <summary>
+        /// lấy tất cả request detail theo id của cha
+        /// </summary>
+        /// <param name="overTimeId"></param>
+        /// <returns></returns>
         public IEnumerable<RequestDetail> GetAllRecordById(Guid overTimeId);
 
-        public void DeleteRecordByOverTimeId(Guid overTimeId);
+        /// <summary>
+        /// xoá tất cả request detail theo id của cha
+        /// </summary>
+        /// <param name="overTimeId"></param>
+        /// <returns></returns>
+        public void DeleteRecordByOverTimeId(Guid overTimeId); 
+
+        #endregion
     }
 }

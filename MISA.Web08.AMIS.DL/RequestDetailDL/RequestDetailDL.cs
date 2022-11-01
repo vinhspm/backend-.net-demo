@@ -12,6 +12,14 @@ namespace MISA.Web08.AMIS.DL
 {
     public class RequestDetailDL : BaseDL<RequestDetail>, IRequestDetailDL
     {
+
+        #region Method
+
+        /// <summary>
+        /// lấy tất cả request detail theo id của cha
+        /// </summary>
+        /// <param name="overTimeId"></param>
+        /// <returns></returns>
         public IEnumerable<RequestDetail> GetAllRecordById(Guid overTimeId)
         {
             string connectionString = DataContext.MySqlConnectionString;
@@ -26,16 +34,21 @@ namespace MISA.Web08.AMIS.DL
 
         }
 
+        /// <summary>
+        /// xoá tất cả request detail theo id của cha
+        /// </summary>
+        /// <param name="overTimeId"></param>
+        /// <returns></returns>
         public int DeleteRecordByOverTimeId(Guid overTimeId)
         {
             int affetecRows = 0;
             using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
-                
+
                 _connection.Open();
                 var trans = _connection.BeginTransaction();
 
-                var storedProcedureName = "proc_requestDetail_DeleteAll" ;
+                var storedProcedureName = "proc_requestDetail_DeleteAll";
                 DynamicParameters value = new DynamicParameters();
 
                 value.Add("@v_OverTimeId", overTimeId);
@@ -61,5 +74,6 @@ namespace MISA.Web08.AMIS.DL
             }
         }
 
+        #endregion
     }
 }

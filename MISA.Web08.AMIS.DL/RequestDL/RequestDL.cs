@@ -14,11 +14,17 @@ namespace MISA.Web08.AMIS.DL
 {
     public class RequestDL : BaseDL<Request>, IRequestDL
     {
-        public List<Employee> ExportAllRequestsFilter(string requestFilter)
-        {
-            throw new NotImplementedException();
-        }
 
+        #region Method
+
+        /// <summary>
+        /// lấy thông tin nhân viên theo phân trang
+        /// </summary>
+        /// <param name="pageSize"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="requestFilter"></param>
+        /// created: vinhkt(30/09/2022)
+        /// <returns>danh sách nhân viên theo filter và phân trang</returns>
         public Dictionary<string, object> GetRequestsFilter(int pageSize, int pageNumber, string requestFilter, RequestStatus requestStatus, Guid? departmentId)
         {
             // tính offset, gán giá trị cho string v_where
@@ -28,15 +34,17 @@ namespace MISA.Web08.AMIS.DL
             {
                 if (requestFilter != "" && requestFilter != null)
                 {
-                    if(departmentId == null)
+                    if (departmentId == null)
                     {
                         v_Where = $"e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\"";
-                    } else
+                    }
+                    else
                     {
                         v_Where = $"(e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\") AND e.DepartmentId=\"{departmentId}\"";
                     }
-                    
-                } else
+
+                }
+                else
                 {
                     if (departmentId == null)
                     {
@@ -48,11 +56,11 @@ namespace MISA.Web08.AMIS.DL
                     }
                 }
             }
-            else if(requestStatus != null)
+            else if (requestStatus != null)
             {
                 if (requestFilter != "")
                 {
-                    if(departmentId != null)
+                    if (departmentId != null)
                     {
                         v_Where = $"(e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\") AND Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())} AND e.DepartmentId=\"{departmentId}\"";
                     }
@@ -60,9 +68,10 @@ namespace MISA.Web08.AMIS.DL
                     {
                         v_Where = $"(e.EmployeeCode LIKE \"%{requestFilter}%\" OR e.FullName LIKE \"%{requestFilter}%\") AND Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())}";
                     }
-                } else
+                }
+                else
                 {
-                    if(departmentId == null)
+                    if (departmentId == null)
                     {
                         v_Where = $"Status={(int)Enum.Parse(typeof(RequestStatus), requestStatus.ToString())}";
                     }
@@ -72,10 +81,10 @@ namespace MISA.Web08.AMIS.DL
 
                     }
                 }
-                
+
 
             }
-            
+
             var storedProcedureName = Resource.Proc_request_Filter;
 
             DynamicParameters values = new DynamicParameters();
@@ -96,6 +105,12 @@ namespace MISA.Web08.AMIS.DL
 
         }
 
+        /// <summary>
+        /// xoá nhiều yêu cầu trong bảng
+        /// </summary>
+        /// <param name="ids">mảng các id của các yêu cầu cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public int MultipleDelete(List<Guid> guids)
         {
             int affetecRows = 0;
@@ -142,6 +157,12 @@ namespace MISA.Web08.AMIS.DL
             }
         }
 
+        /// <summary>
+        /// duyệt, từ chối nhiều yêu cầu trong bảng
+        /// </summary>
+        /// <param name="ids">mảng các id của các yêu cầu cần xoá</param>
+        /// created by vinhkt(30/09/2022)
+        /// <returns>số bản ghi được xoá thành công, số bản ghi xoá thất bại</returns>
         public int MultipleChangeStatus(List<Guid> guids, RequestStatus status)
         {
             int affetecRows = 0;
@@ -187,6 +208,8 @@ namespace MISA.Web08.AMIS.DL
 
                 return affetecRows;
             }
-        }
+        } 
+
+        #endregion
     }
 }
