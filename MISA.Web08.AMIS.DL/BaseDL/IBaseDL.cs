@@ -1,5 +1,6 @@
 ﻿using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,15 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="record"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public ServiceResponse InsertRecord(T record);
+        public ServiceResponse InsertRecord(T record, MySqlTransaction trans = null);
+
+        /// <summary>
+        /// thêm mới 1 bản ghi
+        /// </summary>
+        /// <param name="record"></param>
+        /// <returns></returns>
+        /// created by: vinhkt(30/09/2022)
+        public MySqlConnection GetConnection();
 
         /// <summary>
         /// thêm mới 1 bản ghi

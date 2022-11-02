@@ -65,7 +65,7 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="record"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public ServiceResponse InsertRecord(T record)
+        public ServiceResponse InsertRecord(T record, MySqlTransaction trans = null)
         {
             var v_Columns = "";
             var v_Values = "";
@@ -117,28 +117,24 @@ namespace MISA.Web08.AMIS.DL
             values.Add("@v_Columns", v_Columns);
             values.Add("@v_Values", v_Values);
             var affetecRows = 0;
-
-            using (var _connection = new MySqlConnection(DataContext.MySqlConnectionString))
+            MySqlConnection connection;
+            if (trans != null && trans.Connection != null)
             {
-                _connection.Open();
-                var trans = _connection.BeginTransaction();
-                var storedProcedureName = String.Format(Resource.Proc_Insert, typeof(T).Name);
-                try
-                {
-                    affetecRows = _connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure, transaction: trans);
-                    trans.Commit();
-                }
-                catch (Exception)
-                {
-                    trans.Rollback();
-                }
-                finally
-                {
-                    _connection.Close();
-                }
-
+                connection = trans.Connection;
             }
+            else
+            {
+                connection = new MySqlConnection(DataContext.MySqlConnectionString);
+            }
+       
+                var storedProcedureName = String.Format(Resource.Proc_Insert, typeof(T).Name);
 
+               affetecRows = connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure, transaction: trans);
+
+            if (trans == null || trans.Connection == null)
+            {
+                connection.Close();
+            }
             if (affetecRows > 0)
             {
                 return new ServiceResponse(true, recordId);
@@ -149,6 +145,11 @@ namespace MISA.Web08.AMIS.DL
             }
 
 
+        }
+
+        public MySqlConnection GetConnection()
+        {
+            return new MySqlConnection(DataContext.MySqlConnectionString);
         }
 
         /// <summary>
@@ -191,6 +192,18 @@ namespace MISA.Web08.AMIS.DL
                         v_Query += fieldUpdateString;
                     }
 
+                } 
+                else
+                {
+                    var fieldUpdateString = fieldName + " = " + "NULL";
+                    if (v_Query.Length > 0)
+                    {
+                        v_Query += ", " + fieldUpdateString;
+                    }
+                    else
+                    {
+                        v_Query += fieldUpdateString;
+                    }
                 }
 
             }

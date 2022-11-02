@@ -4,6 +4,7 @@ using MISA.Web08.AMIS.Common.Entities;
 using MISA.Web08.AMIS.Common.Enums;
 using MISA.Web08.AMIS.Common.Resources;
 using MISA.Web08.AMIS.DL;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -113,19 +114,27 @@ namespace MISA.Web08.AMIS.BL
             {
                 return validateResponse;
             }
-            
             else
             {
+                //Mở connection tại đây
+                var connection = _baseDL.GetConnection();
+                connection.Open();
+                var trans = connection.BeginTransaction();
                 try
                 {
-                    var res = _baseDL.InsertRecord(record);
+                    //Mở  transaction tại đây
+                    var res = _baseDL.InsertRecord(record,trans);
                     if (res.Success)
                     {
                         InsertDetailData(record,(Guid) res.Data);
+                        //Đóng Transaction
+                        trans.Commit();
                         return new ServiceResponse(true, res.Data);
                     }
                     else
                     {
+                        //Roll back Transaction
+                        trans.Rollback();
                         return new ServiceResponse(false, new ErrorResult(
                                 AMISErrorCode.InvalidInput,
                                 Resource.DevMsg_ValidateFailed,
@@ -136,9 +145,14 @@ namespace MISA.Web08.AMIS.BL
                 }
                 catch (Exception ex)
                 {
+                    //Roll back Tran tại đây
+                    trans.Rollback();
                     System.Diagnostics.Debug.WriteLine(ex.Message);
                     return new ServiceResponse(false, ex.Message);
                 }
+                //Đóng connection
+                trans.Dispose();
+                connection.Close();
             }
 
         }

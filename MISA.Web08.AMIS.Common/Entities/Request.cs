@@ -20,7 +20,7 @@ namespace MISA.Web08.AMIS.Common.Entities
         public Guid? EmployeeId { get; set; }
 
         // mã nhân viên
-        [ShowInSheetAttribute]
+        [ShowInSheetAttribute, NotColumn]
         public string? EmployeeCode { get; set; }
 
         // tên nhân viên
@@ -28,7 +28,7 @@ namespace MISA.Web08.AMIS.Common.Entities
         public string? FullName { get; set; }
 
         //id đơn vị
-        [ShowInSheetAttribute]
+        [ShowInSheetAttribute, NotColumn]
         public Guid? DepartmentId { get; set; }
 
         // tên đơn vị
@@ -36,7 +36,7 @@ namespace MISA.Web08.AMIS.Common.Entities
         public string? DepartmentName { get; set; }
 
         //id vị trí
-        [ShowInSheetAttribute]
+        [ShowInSheetAttribute, NotColumn]
         public Guid? PositionId { get; set; }
 
         [NotColumn]
@@ -75,14 +75,14 @@ namespace MISA.Web08.AMIS.Common.Entities
         public Guid? ApprovalToId { get; set; }
 
         // tên người duyệt
-        [ShowInSheetAttribute]
+        [ShowInSheetAttribute, NotColumn]
         public string? ApprovalToName { get; set; }
 
         // trạng thái đơn
         [ShowInSheetAttribute]
         public RequestStatus? Status { get; set; }
 
-        [NotColumnAttribute]
+        [NotColumn]
         public List<RequestDetail>? Employees { get; set; }
 
         #endregion
