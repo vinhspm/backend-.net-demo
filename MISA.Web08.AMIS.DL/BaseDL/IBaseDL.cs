@@ -25,15 +25,7 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="record"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public ServiceResponse InsertRecord(T record, MySqlTransaction trans = null);
-
-        /// <summary>
-        /// thêm mới 1 bản ghi
-        /// </summary>
-        /// <param name="record"></param>
-        /// <returns></returns>
-        /// created by: vinhkt(30/09/2022)
-        public MySqlConnection GetConnection();
+        public ServiceResponse InsertRecord(T record);
 
         /// <summary>
         /// thêm mới 1 bản ghi

@@ -116,25 +116,16 @@ namespace MISA.Web08.AMIS.BL
             }
             else
             {
-                //Mở connection tại đây
-                var connection = _baseDL.GetConnection();
-                connection.Open();
-                var trans = connection.BeginTransaction();
                 try
                 {
-                    //Mở  transaction tại đây
-                    var res = _baseDL.InsertRecord(record,trans);
+                    var res = _baseDL.InsertRecord(record);
                     if (res.Success)
                     {
                         InsertDetailData(record,(Guid) res.Data);
-                        //Đóng Transaction
-                        trans.Commit();
                         return new ServiceResponse(true, res.Data);
                     }
                     else
                     {
-                        //Roll back Transaction
-                        trans.Rollback();
                         return new ServiceResponse(false, new ErrorResult(
                                 AMISErrorCode.InvalidInput,
                                 Resource.DevMsg_ValidateFailed,
@@ -145,14 +136,10 @@ namespace MISA.Web08.AMIS.BL
                 }
                 catch (Exception ex)
                 {
-                    //Roll back Tran tại đây
-                    trans.Rollback();
                     System.Diagnostics.Debug.WriteLine(ex.Message);
                     return new ServiceResponse(false, ex.Message);
                 }
-                //Đóng connection
-                trans.Dispose();
-                connection.Close();
+
             }
 
         }

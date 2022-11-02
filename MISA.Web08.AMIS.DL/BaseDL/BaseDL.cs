@@ -1,4 +1,6 @@
 ﻿using Dapper;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using MISA.Web08.AMIS.Common;
 using MISA.Web08.AMIS.Common.Entities;
 using MISA.Web08.AMIS.Common.Enums;
@@ -65,7 +67,7 @@ namespace MISA.Web08.AMIS.DL
         /// <param name="record"></param>
         /// <returns></returns>
         /// created by: vinhkt(30/09/2022)
-        public ServiceResponse InsertRecord(T record, MySqlTransaction trans = null)
+        public ServiceResponse InsertRecord(T record)
         {
             var v_Columns = "";
             var v_Values = "";
@@ -117,24 +119,32 @@ namespace MISA.Web08.AMIS.DL
             values.Add("@v_Columns", v_Columns);
             values.Add("@v_Values", v_Values);
             var affetecRows = 0;
-            MySqlConnection connection;
-            if (trans != null && trans.Connection != null)
+            using (var connection = new MySqlConnection(DataContext.MySqlConnectionString))
             {
-                connection = trans.Connection;
-            }
-            else
-            {
-                connection = new MySqlConnection(DataContext.MySqlConnectionString);
-            }
-       
-                var storedProcedureName = String.Format(Resource.Proc_Insert, typeof(T).Name);
+                connection.Open();
+                var trans = connection.BeginTransaction();
+                try
+                {
+                    
 
+
+                    var storedProcedureName = String.Format(Resource.Proc_Insert, typeof(T).Name);
                affetecRows = connection.Execute(storedProcedureName, values, commandType: System.Data.CommandType.StoredProcedure, transaction: trans);
 
-            if (trans == null || trans.Connection == null)
-            {
-                connection.Close();
+                    trans.Commit();
+                }
+                catch (Exception ex)
+                {
+                    trans.Rollback();
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
+            
+
+
             if (affetecRows > 0)
             {
                 return new ServiceResponse(true, recordId);
@@ -145,11 +155,6 @@ namespace MISA.Web08.AMIS.DL
             }
 
 
-        }
-
-        public MySqlConnection GetConnection()
-        {
-            return new MySqlConnection(DataContext.MySqlConnectionString);
         }
 
         /// <summary>
