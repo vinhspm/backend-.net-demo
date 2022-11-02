@@ -71,6 +71,10 @@ namespace MISA.Web08.AMIS.Common.Entities
         // số điện thoại cố định
         public string? HomePhoneNumber { get; set; }
 
+        // tên đơn vị
+        [NotColumn]
+        public string? DepartmentName { get; set; }
+
         #endregion
 
         #region Method
